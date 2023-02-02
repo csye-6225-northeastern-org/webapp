@@ -79,7 +79,8 @@ app.post('/v1/user', (req, res)=>{
     User.findOne({
         where : { username }
     }).then( result => {
-        if(result || !validations.validateEmail(username)){
+        if(result || !validations.validateEmail(username) || 
+                validations.validatePassword(password)){
             res.status(400).send({"message" : "400 Bad Request"});  
         }
         else{
@@ -123,7 +124,7 @@ app.post('/v1/user', (req, res)=>{
 
 app.put('/v1/user/:id', (req, res) =>{
     const { id } = req.params;
-    if(!validations.validateId(id)){
+    if(!validations.validateId(id) || validations.validatePassword(password)){
         res.status(400).send({"message" : "400 Bad Request"});
     }else{
         const {first_name, last_name, password, username, account_created, account_updated} = req.body;
