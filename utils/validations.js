@@ -14,7 +14,17 @@ function validateId(userId){
   return false;
 }
 
+function validatePassword(inputPass){
+  if(inputPass === ""){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 module.exports = {
     validateEmail,
-    validateId
+    validateId,
+    validatePassword
 };
