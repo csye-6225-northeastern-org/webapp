@@ -88,4 +88,12 @@ exports.getUserInfo = ((req, res) => {
             })
         }
     }
-})
+});
+
+exports.putUserInfo = ((req, res) =>{
+
+});
+
+exports.postUserInfo = ((req, res) =>{
+    
+});
