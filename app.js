@@ -17,7 +17,7 @@ app.use(
 );
 
 
-app.get('/v1/healthz', (req, res) =>{
+app.get('/healthz', (req, res) =>{
     res.sendStatus(200);
 });
 

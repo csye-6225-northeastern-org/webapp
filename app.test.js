@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('./app');
 const validations = require('./utils/validations');
 
-describe('Test the GET /v1/healthz endpoint', () => {
+describe('Test the GET /healthz endpoint', () => {
     it('should return 200 OK', async () => {
-      const response = await request(app).get('/v1/healthz');
+      const response = await request(app).get('/healthz');
       expect(response.statusCode).toBe(200);
     });
   });
