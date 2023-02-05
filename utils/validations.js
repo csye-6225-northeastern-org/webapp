@@ -23,6 +23,7 @@ function validatePassword(inputPass){
   }
 }
 
+
 module.exports = {
     validateEmail,
     validateId,
