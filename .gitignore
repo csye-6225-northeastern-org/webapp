@@ -50,6 +50,9 @@ typings/
 # Optional npm cache directory
 .npm
 
+# ignore package-lock if generated (project uses yarn, not npm)
+package-lock.json
+
 # Optional eslint cache
 .eslintcache
 
