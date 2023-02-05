@@ -18,6 +18,11 @@ function getCredentialsIfPresent(auth){
       
 }
 
+function isObjEmpty(obj) {
+    return JSON.stringify(obj) === '{}';
+}
+
 module.exports = {
-    getCredentialsIfPresent
+    getCredentialsIfPresent,
+    isObjEmpty
 }
