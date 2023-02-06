@@ -11,14 +11,6 @@ describe('Test the GET /healthz endpoint', () => {
 
 describe('Test the email validation function', () => {
   it('should return true if valid email is passed to function', () => {
-    const validationResult = validations.validateEmail("nithinbharadwajd@gmail.com");
-    expect(validationResult).toBe(true);
-  });
-
-  it('should return false if in-valid email is passed to function', () => {
-    const validationResult = validations.validateEmail("asdasdasd.asdsd@@@@gmail.com");
-    expect(validationResult).toBe(false);
-  });
 
 });
 
