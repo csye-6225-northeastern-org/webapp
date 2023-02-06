@@ -95,7 +95,7 @@ exports.putUserInfo = ((req, res) =>{
 
         if(username || account_created || account_updated){
             res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
-        }else if(validations.validatePassword(password)){
+        }else if(validations.checkEmptyInput(password)){
             res.status(400).send({"message" : "400 Bad Request. Empty password sent"});
         }
         else{
@@ -142,8 +142,8 @@ exports.postUserInfo = ((req, res) =>{
     }else{
         const userRecord = getSingleUserRecordByUsername(username);
         userRecord.then(record => {
-            if(record || !validations.validateEmail(username) || 
-                    validations.validatePassword(password)){
+            if(record || !validations.validateEmail(username) || validations.checkEmptyInput(first_name) ||
+            validations.checkEmptyInput(last_name) || validations.checkEmptyInput(password)){
                 res.status(400).send({"message" : "400 Bad Request. Invalid payload"});  
             }else{
                 authUtils.generateHash(password)

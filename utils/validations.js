@@ -14,7 +14,7 @@ function validateId(userId){
   return false;
 }
 
-function validatePassword(inputPass){
+function checkEmptyInput(inputPass){
   if(inputPass === ""){
     return true;
   }
@@ -27,5 +27,5 @@ function validatePassword(inputPass){
 module.exports = {
     validateEmail,
     validateId,
-    validatePassword
+    checkEmptyInput
 };
