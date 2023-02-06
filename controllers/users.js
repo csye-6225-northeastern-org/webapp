@@ -79,7 +79,51 @@ exports.getUserInfo = ((req, res) => {
 });
 
 exports.putUserInfo = ((req, res) =>{
-
+    const inputCheckBool = checkIdInput(req, res);
+    const {id} = req.params;
+    if(inputCheckBool){
+        res.status(400).send({"message" : "Invalid Id in the request"});
+    }else{
+        const {first_name, last_name, password, username, account_created, account_updated} = req.body;
+        
+        if(username || account_created || account_updated){
+            res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
+        }else{
+            const credentials = checkAuthHeaders(req, res);
+        if(utils.isObjEmpty(credentials)){
+            res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
+        }else{
+            console.log("Hitting DB to get the record of the input id");
+            const recordFromDB = getSingleUserRecord(req, res, credentials.username);
+            recordFromDB.then(result =>{
+                const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
+                passCompare.then( cmpResult => {
+                    if(cmpResult){
+                        authUtils.generateHash(credentials.password)
+                        .then( hash =>{
+                            User.update({
+                                    firstName: first_name,
+                                    lastName: last_name,
+                                    password: hash,
+                                    account_updated : new Date()
+                                },{
+                                    where : {id}
+                            })
+                            .then( result => {res.status(204).send({}); })
+                            .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
+                        })
+                    }
+                    else{
+                        res.status(401).send({"message" : "401 Unauthorized"});
+                    }
+                })
+                .catch( error => {
+                    res.status(401).send({"message" : "401 Unauthorized", error});
+                })
+            })
+            }
+        }
+    }
 });
 
 exports.postUserInfo = ((req, res) =>{
