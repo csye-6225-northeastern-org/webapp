@@ -42,7 +42,7 @@ async function getSingleUserRecord(req, res, username){
     )
 }
 
-async function getSingleUserRecordByUsername(req, res, username){
+async function getSingleUserRecordByUsername(username){
     return await User.findOne({
         where : { username }
     }).then( result => {
@@ -140,13 +140,13 @@ exports.postUserInfo = ((req, res) =>{
     if(account_created || account_updated){
         res.status(400).send({"message" : "400 Bad Request. Cannot send account_created / account_updated "});
     }else{
-        const userRecord = getSingleUserRecordByUsername();
+        const userRecord = getSingleUserRecordByUsername(username);
         userRecord.then(record => {
             if(record || !validations.validateEmail(username) || 
                     validations.validatePassword(password)){
-                res.status(400).send({"message" : "400 Bad Request"});  
+                res.status(400).send({"message" : "400 Bad Request. Invalid payload"});  
             }else{
-                authUtils.generateHash(credentials.password)
+                authUtils.generateHash(password)
                 .then(hash => {
                     User.create({
                         firstName: first_name,
