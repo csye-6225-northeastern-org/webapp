@@ -42,6 +42,14 @@ async function getSingleUserRecord(req, res, username){
     )
 }
 
+async function getSingleUserRecordByUsername(req, res, username){
+    return await User.findOne({
+        where : { username }
+    }).then( result => {
+        return result;
+    })
+}
+
 exports.getUserInfo = ((req, res) => {
     const inputCheckBool = checkIdInput(req, res);
     if(inputCheckBool){
@@ -51,7 +59,6 @@ exports.getUserInfo = ((req, res) => {
         if(utils.isObjEmpty(credentials)){
             res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
         }else{
-            console.log("Hitting DB to get the record of the input id");
             const recordFromDB = getSingleUserRecord(req, res, credentials.username)
             recordFromDB.then(result =>{
                 const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
@@ -85,47 +92,85 @@ exports.putUserInfo = ((req, res) =>{
         res.status(400).send({"message" : "Invalid Id in the request"});
     }else{
         const {first_name, last_name, password, username, account_created, account_updated} = req.body;
-        
+
         if(username || account_created || account_updated){
             res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
-        }else{
+        }else if(validations.validatePassword(password)){
+            res.status(400).send({"message" : "400 Bad Request. Empty password sent"});
+        }
+        else{
             const credentials = checkAuthHeaders(req, res);
-        if(utils.isObjEmpty(credentials)){
-            res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
-        }else{
-            console.log("Hitting DB to get the record of the input id");
-            const recordFromDB = getSingleUserRecord(req, res, credentials.username);
-            recordFromDB.then(result =>{
-                const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                passCompare.then( cmpResult => {
-                    if(cmpResult){
-                        authUtils.generateHash(credentials.password)
-                        .then( hash =>{
-                            User.update({
-                                    firstName: first_name,
-                                    lastName: last_name,
-                                    password: hash,
-                                    account_updated : new Date()
-                                },{
-                                    where : {id}
+            if(utils.isObjEmpty(credentials)){
+                res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
+            }else{
+                const recordFromDB = getSingleUserRecord(req, res, credentials.username);
+                recordFromDB.then(result =>{
+                    const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
+                    passCompare.then( cmpResult => {
+                        if(cmpResult){
+                            authUtils.generateHash(credentials.password)
+                            .then( hash =>{
+                                User.update({
+                                        firstName: first_name,
+                                        lastName: last_name,
+                                        password: hash,
+                                        account_updated : new Date()
+                                    },{
+                                        where : {id}
+                                })
+                                .then( result => {res.status(204).send({}); })
+                                .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
                             })
-                            .then( result => {res.status(204).send({}); })
-                            .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
-                        })
-                    }
-                    else{
-                        res.status(401).send({"message" : "401 Unauthorized"});
-                    }
+                        }
+                        else{
+                            res.status(401).send({"message" : "401 Unauthorized"});
+                        }
+                    })
+                    .catch( error => {
+                        res.status(401).send({"message" : "401 Unauthorized", error});
+                    })
                 })
-                .catch( error => {
-                    res.status(401).send({"message" : "401 Unauthorized", error});
-                })
-            })
             }
         }
     }
 });
 
 exports.postUserInfo = ((req, res) =>{
-    
+    const {first_name, last_name, password, username, account_created, account_updated} = req.body;
+    if(account_created || account_updated){
+        res.status(400).send({"message" : "400 Bad Request. Cannot send account_created / account_updated "});
+    }else{
+        const userRecord = getSingleUserRecordByUsername();
+        userRecord.then(record => {
+            if(record || !validations.validateEmail(username) || 
+                    validations.validatePassword(password)){
+                res.status(400).send({"message" : "400 Bad Request"});  
+            }else{
+                authUtils.generateHash(credentials.password)
+                .then(hash => {
+                    User.create({
+                        firstName: first_name,
+                        lastName: last_name,
+                        password: hash,
+                        userName: username,
+                        account_created : new Date(),
+                        account_updated : new Date() 
+                    }).then( result =>{
+                        res.status(201).send(
+                            {
+                                "id" : result.getDataValue("id"),
+                                "first_name" : result.getDataValue("firstName"),
+                                "last_name" : result.getDataValue("lastName"),
+                                "username" : result.getDataValue("userName"),
+                                "account_created" : result.getDataValue("account_created"),
+                                "account_updated" : result.getDataValue("account_updated")
+                        });
+                    })
+                    .catch((error) => {
+                        res.status(400).send({"message" : "400 Bad Request", error});
+                    })
+                })
+            }
+        })
+    }
 });
