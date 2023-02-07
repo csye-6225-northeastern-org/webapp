@@ -12,6 +12,12 @@ const sequelize = new Sequelize(dbName, userName, password,
             pool : dbPoolConfig
         });
 
+(
+    async() => {
+        await sequelize.sync({ force: true });    
+    }
+)();
+
 module.exports = {
     sequelize,
     DataTypes

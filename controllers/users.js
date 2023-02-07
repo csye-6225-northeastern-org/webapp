@@ -166,6 +166,7 @@ exports.postUserInfo = ((req, res) =>{
                         account_created : new Date(),
                         account_updated : new Date() 
                     }).then( result =>{
+                        console.log("Result : ", result);
                         res.status(201).send(
                             {
                                 "id" : result.getDataValue("id"),
