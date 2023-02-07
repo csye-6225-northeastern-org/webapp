@@ -10,7 +10,7 @@ class ProductService {
     }
 
     async updateProduct(id, payload) {
-        return await User.update(payload, {
+        return await Product.update(payload, {
           where: {
             id
           }

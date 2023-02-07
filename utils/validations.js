@@ -24,9 +24,10 @@ function checkEmptyInput(inputPass){
 }
 
 function validateQuantity(quantity){
-
-  if(Number.isInteger(quantity)){
-    if(quantity >= 0 && quantity <= 100 ){
+  
+  if(!validateId(quantity)){
+    const quantityParsed = parseInt(quantity);
+    if(quantityParsed >= 1 && quantityParsed <= 100 ){
       return true;
     }
   }
