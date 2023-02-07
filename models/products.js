@@ -7,35 +7,49 @@ const Product = sequelize.define('product', {
         primaryKey: true, 
         autoIncrement: true 
     },
-    firstName: {
-        field : 'first_name',
+    name: {
+        field : 'name',
         type: DataTypes.STRING,
         allowNull: false
     },
-    lastName: {
-        field : 'last_name',
+    description: {
+        field : 'description',
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    sku: {
+        field : 'sku',
         type: DataTypes.STRING,
         allowNull : false
     },
-    password : {
-        field : 'password',
+    manufacturer : {
+        field : 'manufacturer',
         type: DataTypes.STRING,
         allowNull : false
     },
-    userName : {
-        field : 'username',
-        type: DataTypes.STRING,
-        allowNull : false
+    quantity : {
+        field : 'quantity',
+        type: DataTypes.INTEGER,
+        allowNull : false,
+        validate: {
+            max: 100,
+            min: 0
+        }
     },
 
-    createdAt : {
+    date_added : {
         type: DataTypes.DATE,
-        field: 'account_created'
+        field: 'date_added'
     },
 
-    updatedAt : {
+    date_last_updated : {
         type: DataTypes.DATE,
-        field: 'account_updated'
+        field: 'date_last_updated'
+    },
+
+    owner_user_id : {
+        type: DataTypes.INTEGER,
+        allowNull : false
     }
 
   }, {
