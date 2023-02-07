@@ -1,7 +1,12 @@
 const {sequelize, DataTypes } = require("../postgres/db");
 
 const User = sequelize.define('users', {
-    
+
+    id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
+    },
     firstName: {
         field : 'first_name',
         type: DataTypes.STRING,
@@ -24,15 +29,19 @@ const User = sequelize.define('users', {
     },
 
     account_created : {
-        type: DataTypes.NOW
+        type: DataTypes.DATE,
+        field: 'account_created'
     },
 
     account_updated : {
-        type: DataTypes.NOW
+        type: DataTypes.DATE,
+        field: 'account_updated'
     }
 
   }, {
-    timestamps : false
+    timestamps : false,
+    createdAt: 'account_created',
+    updatedAt: 'account_updated'
 });
 
 module.exports = User;
