@@ -3,6 +3,7 @@ const { dbName,
         hostUrl, 
         userName,
         password,
+        nodeEnv,
         dbPoolConfig} = require("./config")
 
 const sequelize = new Sequelize(dbName, userName, password, 
@@ -12,11 +13,15 @@ const sequelize = new Sequelize(dbName, userName, password,
             pool : dbPoolConfig
         });
 
-(
-    async() => {
-        await sequelize.sync({ force: true });    
-    }
-)();
+
+if(nodeEnv === 'dev'){
+    (
+        async() => {
+            await sequelize.sync({ force: true });    
+        }
+    )();
+}
+
 
 module.exports = {
     sequelize,

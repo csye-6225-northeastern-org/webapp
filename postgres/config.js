@@ -14,5 +14,6 @@ module.exports = {
     hostUrl : process.env.HOST,
     userName : process.env.USERNAME,
     password : process.env.PASSWORD,
+    nodeEnv : process.env.NODE_ENV,
     dbPoolConfig
 }

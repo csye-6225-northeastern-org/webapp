@@ -23,9 +23,20 @@ function checkEmptyInput(inputPass){
   }
 }
 
+function validateQuantity(quantity){
+
+  if(Number.isInteger(quantity)){
+    if(quantity >= 0 && quantity <= 100 ){
+      return true;
+    }
+  }
+  return false;
+}
+
 
 module.exports = {
     validateEmail,
     validateId,
-    checkEmptyInput
+    checkEmptyInput,
+    validateQuantity
 };
