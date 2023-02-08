@@ -47,34 +47,24 @@ exports.postProductInfo = ((req, res) => {
                         const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
                         passCompare.then(cmpResult =>{
                             if(cmpResult){
-                                const owner_user_id = result.dataValues.id;
-                                productService.createProduct({
-                                    name,
-                                    description,
-                                    sku,
-                                    manufacturer,
-                                    quantity,
-                                    owner_user_id,
-                                    date_added : new Date(),
-                                    date_last_updated : new Date() 
-                                }).then(createdRow =>{
-                                    console.log("createdRow for Product : ", createdRow);
-                                    res.status(201).send(
-                                        {
-                                            "id" : createdRow.getDataValue("id"),
-                                            "name" : createdRow.getDataValue("name"),
-                                            "description" : createdRow.getDataValue("description"),
-                                            "sku" : createdRow.getDataValue("sku"),
-                                            "manufacturer" : createdRow.getDataValue("manufacturer"),
-                                            "quantity" : createdRow.getDataValue("quantity"),
-                                            "date_added" : createdRow.getDataValue("date_added"),
-                                            "date_last_updated" : createdRow.getDataValue("date_last_updated"),
-                                            "owner_user_id" : createdRow.getDataValue("account_updated")
-                                    })
-                                })
-                                .catch((error) => {
-                                    res.status(400).send({"message" : "400 Bad Request", error});
-                                })
+                                // If password is valid, then we check if sku exists. If exists throw 400 - Bad request
+                                productService.findOrCreate(sku, {
+                                                name,
+                                                description,
+                                                sku,
+                                                manufacturer,
+                                                quantity,
+                                                owner_user_id : result.dataValues.id,
+                                                date_added : new Date(),
+                                                date_last_updated : new Date() 
+                                            }).then(result => {
+                                                const [createdRow, created] = result;
+                                                if(created){
+                                                    res.status(201).send(createdRow);
+                                                }else{
+                                                    res.status(400).send({"message" : "400 Bad Request. SKU Already exists"});
+                                                }
+                                            });
                             }else{
                                 res.status(401).send({"message" : "401 Unauthorized"});
                             }
@@ -83,8 +73,6 @@ exports.postProductInfo = ((req, res) => {
             })
         }
     }
-
-    // productService
 });
 
 exports.updateProductInfo = ((req, res) => {
