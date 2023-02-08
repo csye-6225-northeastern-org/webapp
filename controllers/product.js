@@ -51,7 +51,10 @@ exports.postProductInfo = ((req, res) => {
     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
     if(date_added || date_last_updated || owner_user_id){
         res.status(400).send({"message" : "400 Bad Request. Cannot send date_added / date_last_updated /owner_user_id"});
-    }else if(validations.validateQuantity(quantity)){
+    }else if(!name || !description || !sku || !manufacturer || !quantity){
+        res.status(400).send({"message" : "400 Bad Request. Invalid Data sent in name/description/manufacturer/sku/quantity"})
+    }
+    else if(validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request. Invalid Quantity Sent in the payload"});
     }else{
         const credentials = checkAuthHeaders(req, res);
