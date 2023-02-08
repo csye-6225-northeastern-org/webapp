@@ -9,13 +9,12 @@ class ProductService {
         return await Product.findOne({where: {id: productId}});
     }
 
-    async updateProduct(id, payload) {
-        return await Product.update(payload, {
-          where: {
-            id
-          }
-        });
-      }
+    async findOrCreate(sku, defaults){
+      return await Product.findOrCreate({
+        where : {sku},
+        defaults
+      });
+    }
     
 
 }
