@@ -56,7 +56,7 @@ exports.getUserInfo = ((req, res) => {
             const recordFromDB = getSingleUserRecord(req, res, credentials.username)
             recordFromDB.then(result =>{
                 if(!result){
-                    res.status(400).send({"message" : "400 Bad Request. No userId found"});
+                    res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
                 }else if(result.dataValues.userName !== credentials.username){
                     res.status(403).send({"message" : "403 Forbidden"});
                 }else{
@@ -166,7 +166,7 @@ exports.postUserInfo = ((req, res) =>{
                         account_created : new Date(),
                         account_updated : new Date() 
                     }).then( result =>{
-                        console.log("Result : ", result);
+                        // console.log("Result : ", result);
                         res.status(201).send(
                             {
                                 "id" : result.getDataValue("id"),
