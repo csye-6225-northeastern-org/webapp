@@ -1,3 +1,4 @@
+const { deleteProductInfo } = require("../controllers/product");
 const Product = require("../models/products");
 class ProductService {
     
@@ -15,7 +16,26 @@ class ProductService {
         defaults
       });
     }
+
+    async findOneBySku(sku){
+      return await Product.findOne({
+        where : {sku}
+      });
+    }
+
+    async deleteProductInfo(productId){
+      return await Product.destroy({
+        where : { id : productId }
+      });
+    }
     
+    async updateProductInfo(productUpdate, productId){
+      return await Product.update(productUpdate, {
+        where: {
+          id: productId
+        }
+      })
+    }
 
 }
 
