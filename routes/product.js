@@ -5,7 +5,9 @@ const productController = require("../controllers/product");
 
 router.get("/:id", productController.getProductInfo);
 
-router.put("/:id", productController.updateProductInfo);
+router.put("/:id", productController.putProductInfo);
+
+router.patch("/:id", productController.patchProductInfo);
 
 router.post("", productController.postProductInfo);
 
