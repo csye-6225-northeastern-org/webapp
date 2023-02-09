@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest"
+    "test": "jest",
+    "migrate" : "npm sequelize-cli db:migrate",
+    "down" : "npm sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "jest": "^29.4.1",
+    "sequelize-cli": "^6.6.0",
     "supertest": "^6.3.3"
   }
 }
