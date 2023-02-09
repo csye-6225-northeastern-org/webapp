@@ -285,35 +285,36 @@ exports.deleteProductInfo = ((req, res) => {
             .then( result =>{
                 if(!result){
                     res.status(401).send({"message" : "401 Unauthorized. No user found"});
-                }else if(result.dataValues.userName !== credentials.username){
-                    res.status(403).send({"message" : "403 Forbidden"});
                 }else{
-                    const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                    passCompare.then(cmpResult => {
-                        if(cmpResult){
-                            const userIdAccessing = result.getDataValue("id");
-                            productService.findOne(id)
-                            .then(productRow => {
-                                if(!productRow){
-                                    res.status(404).send({"message" : "404 Not Found"});
-                                }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                    res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
-                                }else{
-                                    productService.deleteProductInfo(id)
-                                    .then( deletedRow => {
-                                        if(deletedRow > 0){
-                                            res.status(204).send({}); 
-                                        }else{
-                                            res.status(404).send({"message" : "404 Not Found"});
-                                        }
-                                    })
-                                    
-                                }
-                            }) 
-                        }else{
-                            res.status(401).send({"message" : "401 Unauthorized"});
-                        }
-                    })
+                    // Got a row from DB. Need to check if the same username and password
+                    if(result.dataValues.userName === credentials.username){
+                        authUtils.comparePassword(credentials.password, result.dataValues.password)
+                        .then(cmpResult => {
+                            if(cmpResult){
+                                const userIdAccessing = result.getDataValue("id");
+                                productService.findOne(id)
+                                .then(productRow => {
+                                    if(!productRow){
+                                        res.status(404).send({"message" : "404 Not Found"});
+                                    }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
+                                        res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
+                                    }else{
+                                        productService.deleteProductInfo(id)
+                                        .then( deletedRow => {
+                                            if(deletedRow > 0){
+                                                res.status(204).send({}); 
+                                            }else{
+                                                res.status(404).send({"message" : "404 Not Found"});
+                                            }
+                                        })
+                                        
+                                    }
+                                }) 
+                            }else{
+                                res.status(401).send({"message" : "401 Unauthorized"});
+                            }
+                        })
+                    }
                 }
             })
         }
