@@ -102,7 +102,6 @@ exports.postProductInfo = ((req, res) => {
 });
 
 exports.putProductInfo = ((req, res) => {
-
     const { id } = req.params;
     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
     const inputCheckBool = checkIdInput(req, res);
@@ -112,6 +111,8 @@ exports.putProductInfo = ((req, res) => {
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
     }else if(validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
+    }else if(!name || !description || !sku || !manufacturer || !quantity){
+        res.status(400).send({"message" : "400 Bad Request - All the mandatory fields need to be set"});
     }else{
         const credentials = checkAuthHeaders(req, res);
         if(utils.isObjEmpty(credentials)){
@@ -123,57 +124,37 @@ exports.putProductInfo = ((req, res) => {
             .then( result =>{
                 if(!result){
                     res.status(401).send({"message" : "401 Unauthorized. No user found"});
-                }else if(result.dataValues.userName !== credentials.username){
-                    res.status(403).send({"message" : "403 Forbidden"});
                 }else{
-                    const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                    passCompare.then(cmpResult => {
+                    authUtils.comparePassword(credentials.password, result.dataValues.password)
+                    .then(cmpResult => {
                         if(cmpResult){
                             const userIdAccessing = result.getDataValue("id");
-                            if(sku){
-                                productService.findOneBySku(sku)
-                                .then(rowFound=>{
-                                    if(rowFound){
-                                        res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
-                                    }else{
-                                        productService.findOne(id)
-                                        .then(productRow => {
-                                            if(!productRow){
-                                                res.status(400).send({"message" : "400 Not Found"});
-                                            }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                                res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
-                                            }else{
-                                                productService.updateProductInfo({name, description,
-                                                            sku, manufacturer, quantity}, id)
+                            productService.findOne(id)
+                            .then(productRow => {
+                                if(!productRow){
+                                    res.status(400).send({"message" : "400 Not Found"});
+                                }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
+                                    res.status(403).send({"message" : "403 Forbidden - Not allowed"});
+                                }else{
+                                    productService.findOneBySku(sku)
+                                    .then(rowFound=>{
+                                        if(rowFound && rowFound.dataValues.id !== id){
+                                            res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
+                                        }else{
+                                            productService.updateProductInfo({name, description,
+                                                sku, manufacturer, quantity,
+                                                    date_last_updated : new Date()}, id)
                                                 .then( updatedRow => {
                                                     if(updatedRow){
                                                         res.status(204).send({});  
-                                                    }
-                                                })
-                                                
-                                            }
-                                        })
-                                    }
-                                })
-                            }else{
-                                productService.findOne(id)
-                                    .then(productRow => {
-                                        if(!productRow){
-                                            res.status(400).send({"message" : "400 Not Found"});
-                                        }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                            res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
-                                        }else{
-                                            productService.updateProductInfo({name, description,
-                                                        sku, manufacturer, quantity}, id)
-                                            .then( updatedRow => {
-                                                if(updatedRow){
-                                                    res.status(204).send({});  
                                                 }
                                             })
-                                            
                                         }
                                     })
-                            }
+                                
+                                }
+                            })
+                            
                         }else{
                             res.status(401).send({"message" : "401 Unauthorized"});
                         }
@@ -207,57 +188,47 @@ exports.patchProductInfo = ((req, res) => {
             .then( result =>{
                 if(!result){
                     res.status(401).send({"message" : "401 Unauthorized. No user found"});
-                }else if(result.dataValues.userName !== credentials.username){
-                    res.status(403).send({"message" : "403 Forbidden"});
                 }else{
-                    const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                    passCompare.then(cmpResult => {
+                    authUtils.comparePassword(credentials.password, result.dataValues.password)
+                    .then(cmpResult => {
                         if(cmpResult){
                             const userIdAccessing = result.getDataValue("id");
-                            if(sku){
-                                productService.findOneBySku(sku)
-                                .then(rowFound=>{
-                                    if(rowFound){
-                                        res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
-                                    }else{
-                                        productService.findOne(id)
-                                        .then(productRow => {
-                                            if(!productRow){
-                                                res.status(400).send({"message" : "400 Not Found"});
-                                            }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                                res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
+                            productService.findOne(id)
+                            .then(productRow => {
+                                if(!productRow){
+                                    res.status(400).send({"message" : "400 Not Found"});
+                                }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
+                                    res.status(403).send({"message" : "403 Forbidden - Not allowed"});
+                                }else{
+                                    if(sku){
+                                        productService.findOneBySku(sku)
+                                        .then(rowFound=>{
+                                            if(rowFound && rowFound.dataValues.id !== id){
+                                                res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
                                             }else{
                                                 productService.updateProductInfo({name, description,
-                                                            sku, manufacturer, quantity}, id)
-                                                .then( updatedRow => {
-                                                    if(updatedRow){
-                                                        res.status(204).send({});  
+                                                    sku, manufacturer, quantity,
+                                                        date_last_updated : new Date()}, id)
+                                                    .then( updatedRow => {
+                                                        if(updatedRow){
+                                                            res.status(204).send({});  
                                                     }
                                                 })
-                                                
                                             }
                                         })
-                                    }
-                                })
-                            }else{
-                                productService.findOne(id)
-                                    .then(productRow => {
-                                        if(!productRow){
-                                            res.status(400).send({"message" : "400 Not Found"});
-                                        }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                            res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
-                                        }else{
-                                            productService.updateProductInfo({name, description,
-                                                        sku, manufacturer, quantity}, id)
+                                    }else{
+                                        productService.updateProductInfo({name, description,
+                                            sku, manufacturer, quantity,
+                                                date_last_updated : new Date()}, id)
                                             .then( updatedRow => {
                                                 if(updatedRow){
                                                     res.status(204).send({});  
-                                                }
-                                            })
-                                            
-                                        }
-                                    })
-                            }
+                                            }
+                                        })
+                                    }  
+                                }
+                            })
+                            
                         }else{
                             res.status(401).send({"message" : "401 Unauthorized"});
                         }
@@ -266,7 +237,6 @@ exports.patchProductInfo = ((req, res) => {
             })
         }
     }
-
 });
 
 exports.deleteProductInfo = ((req, res) => {

@@ -1,5 +1,6 @@
 const { deleteProductInfo } = require("../controllers/product");
 const Product = require("../models/products");
+const { Op } = require("sequelize");
 class ProductService {
     
     async createProduct(product){
