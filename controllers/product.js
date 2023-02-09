@@ -48,10 +48,14 @@ exports.getProductInfo = ((req, res) => {
 });
 
 exports.postProductInfo = ((req, res) => {
+    const invalidRequestBody = JSON.stringify(req.body)==="{}";
     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
     if(date_added || date_last_updated || owner_user_id){
         res.status(400).send({"message" : "400 Bad Request. Cannot send date_added / date_last_updated /owner_user_id"});
-    }else if(!name || !description || !sku || !manufacturer || !quantity){
+    }else if(invalidRequestBody){
+        res.status(400).send({"message" : "400 Bad Request. Empty payload sent"});
+    }
+    else if(!name || !description || !sku || !manufacturer || !quantity){
         res.status(400).send({"message" : "400 Bad Request. Invalid Data sent in name/description/manufacturer/sku/quantity"})
     }
     else if(validations.validateQuantity(quantity)){
@@ -103,11 +107,15 @@ exports.postProductInfo = ((req, res) => {
 
 exports.putProductInfo = ((req, res) => {
     const { id } = req.params;
+    const invalidRequestBody = JSON.stringify(req.body)==="{}";
     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
     const inputCheckBool = checkIdInput(req, res);
     if(inputCheckBool){
         res.status(400).send({"message" : "400 Bad Request - Invalid Id in the request"});
-    }else if(date_added || date_last_updated || owner_user_id){
+    }else if(invalidRequestBody){
+        res.status(400).send({"message" : "400 Bad Request - Empty payload sent"});
+    }
+    else if(date_added || date_last_updated || owner_user_id){
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
     }else if(validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
@@ -171,9 +179,12 @@ exports.patchProductInfo = ((req, res) => {
     const { id } = req.params;
     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
     const inputCheckBool = checkIdInput(req, res);
+    const invalidRequestBody = JSON.stringify(req.body)==="{}";
     if(inputCheckBool){
         res.status(400).send({"message" : "400 Bad Request - Invalid Id in the request"});
-    }else if(date_added || date_last_updated || owner_user_id){
+    }else if(invalidRequestBody){
+        res.status(400).send({"message" : "400 Bad Request - Empty Payload Sent"});
+    }else if(date_added || date_last_updated || owner_user_id ||  !validations.validInputsForProductForPatch(req.body)){
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
     }else if(validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
