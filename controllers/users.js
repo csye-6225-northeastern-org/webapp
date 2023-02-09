@@ -53,34 +53,37 @@ exports.getUserInfo = ((req, res) => {
             res.status(401).send({"message" : "Unauthorized - Missing username/password"});
         }
         else{
-            const recordFromDB = getSingleUserRecord(req, res, credentials.username)
+            const recordFromDB = getSingleUserRecordByUsername(credentials.username)
             recordFromDB.then(result =>{
                 if(!result){
                     res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
-                }else if(result.dataValues.userName !== credentials.username){
-                    res.status(403).send({"message" : "403 Forbidden"});
                 }else{
-                    const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                    passCompare.then( cmpResult => {
-                        if(cmpResult){
-                            res.status(200).send({
-                                "id" : result.getDataValue("id"),
-                                "first_name" : result.getDataValue("firstName"),
-                                "last_name" : result.getDataValue("lastName"),
-                                "username" : result.getDataValue("userName"),
-                                "account_created" : result.getDataValue("account_created"),
-                                "account_updated" : result.getDataValue("account_updated")
-                            });
-                        }
-                        else{
-                            res.status(401).send({"message" : "401 Unauthorized"});
-                        }
-                    })
-                    .catch( error => {
-                        res.status(401).send({"message" : "401 Unauthorized", error});
-                    })
+                    // Got a row from DB. Need to check if the same username and password
+                    if(result.dataValues.userName === credentials.username){
+                        authUtils.comparePassword(credentials.password, result.dataValues.password)
+                        .then(passwordCompare =>{
+                            if(passwordCompare){
+                                if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
+                                    res.status(403).send({"message" : "403 Forbidden - Id incorrect"});
+                                }else{
+                                    res.status(200).send({
+                                        "id" : result.getDataValue("id"),
+                                        "first_name" : result.getDataValue("firstName"),
+                                        "last_name" : result.getDataValue("lastName"),
+                                        "username" : result.getDataValue("userName"),
+                                        "account_created" : result.getDataValue("account_created"),
+                                        "account_updated" : result.getDataValue("account_updated")
+                                    });
+                                }
+                            }else{
+                                res.status(401).send({"message" : "401 Unauthorized - Invalid Password"});
+                            }
+                        }) 
+                    }
+                    else{
+                        res.status(401).send({"message" : "401 Unauthorized"});
+                    }
                 }
-                
             })
         }
     }
