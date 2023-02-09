@@ -34,10 +34,25 @@ function validateQuantity(quantity){
   return false;
 }
 
+function validInputsForProductForPatch(params) {
+  const { quantity } = params; //{}
+  const numericalQty = Number(quantity);
+  const validQuantity = numericalQty >= 0 && numericalQty <= 100;
+  for (let i in params) {
+    if (i === "quantity" && !validQuantity) {
+      return false;
+    }
+    if (!params[i] || params[i] === "") {
+      return false;
+    }
+  }
+  return true;
+}
 
 module.exports = {
     validateEmail,
     validateId,
     checkEmptyInput,
-    validateQuantity
+    validateQuantity,
+    validInputsForProductForPatch
 };
