@@ -116,22 +116,26 @@ exports.putUserInfo = ((req, res) =>{
                     }else{
                         // Got a row from DB. Need to check if the same username and password
                         if(result.dataValues.userName === credentials.username){
-                            const passCompare = authUtils.comparePassword(credentials.password, result.dataValues.password);
-                            passCompare.then( cmpResult => {
+                            authUtils.comparePassword(credentials.password, result.dataValues.password)
+                            .then( cmpResult => {
                                 if(cmpResult){
-                                    authUtils.generateHash(credentials.password)
-                                    .then( hash =>{
-                                        User.update({
-                                                firstName: first_name,
-                                                lastName: last_name,
-                                                password: hash,
-                                                account_updated : new Date()
-                                            },{
-                                                where : {id}
+                                    if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
+                                        res.status(403).send({"message" : "403 Forbidden"});
+                                    }else{
+                                        authUtils.generateHash(credentials.password)
+                                        .then( hash =>{
+                                            User.update({
+                                                    firstName: first_name,
+                                                    lastName: last_name,
+                                                    password: hash,
+                                                    account_updated : new Date()
+                                                },{
+                                                    where : {id}
+                                            })
+                                            .then( result => {res.status(204).send({}); })
+                                            .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
                                         })
-                                        .then( result => {res.status(204).send({}); })
-                                        .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
-                                    })
+                                    }    
                                 }
                                 else{
                                     res.status(401).send({"message" : "401 Unauthorized"});
