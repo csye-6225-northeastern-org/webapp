@@ -119,10 +119,10 @@ exports.putProductInfo = ((req, res) => {
     }
     else if(date_added || date_last_updated || owner_user_id){
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
+    }else if(!name || !description || !sku || !manufacturer || !quantity){
+        res.status(400).send({"message" : "400 Bad Request - All the mandatory fields need to be set"});
     }else if(!validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
-    }else if(!name && !description && !sku && !manufacturer && !quantity){
-        res.status(400).send({"message" : "400 Bad Request - All the mandatory fields need to be set"});
     }else{
         const credentials = checkAuthHeaders(req, res);
         if(utils.isObjEmpty(credentials)){
@@ -148,7 +148,7 @@ exports.putProductInfo = ((req, res) => {
                                 }else{
                                     productService.findOneBySku(sku)
                                     .then(rowFound=>{
-                                        if(rowFound && rowFound.dataValues.id !== id){
+                                        if(rowFound && parseInt(rowFound.dataValues.id) !== parseInt(id)){
                                             res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
                                         }else{
                                             productService.updateProductInfo({name, description,
@@ -186,8 +186,10 @@ exports.patchProductInfo = ((req, res) => {
         res.status(400).send({"message" : "400 Bad Request - Invalid Id in the request"});
     }else if(invalidRequestBody){
         res.status(400).send({"message" : "400 Bad Request - Empty Payload Sent"});
-    }else if(date_added || date_last_updated || owner_user_id ||  !validations.validInputsForProductForPatch(req.body)){
+    }else if(date_added || date_last_updated || owner_user_id){
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
+    }else if(!validations.validInputsForProductForPatch(req.body)){
+        res.status(400).send({"message" : "400 Bad Request - Invalid Input in payload"});
     }else if(!validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
     }else{
@@ -216,7 +218,7 @@ exports.patchProductInfo = ((req, res) => {
                                     if(sku){
                                         productService.findOneBySku(sku)
                                         .then(rowFound=>{
-                                            if(rowFound && rowFound.dataValues.id !== id){
+                                            if(rowFound && parseInt(rowFound.dataValues.id) !== parseInt(id)){
                                                 res.status(400).send({"message" : "400 Bad Request - SKU Already exists"})
                                             }else{
                                                 productService.updateProductInfo({name, description,
