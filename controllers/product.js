@@ -39,7 +39,7 @@ exports.getProductInfo = ((req, res) => {
         productService.findOne(id)
         .then(row =>{
             if(!row){
-                res.status(400).send({"message" : "Bad Request-No Product-id found"})
+                res.status(404).send({"message" : "404 - No Product-id found"})
             }else{
                 res.status(200).send(row.dataValues);
             }
