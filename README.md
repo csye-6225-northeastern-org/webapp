@@ -12,6 +12,18 @@ This is a Node.js project designed to solve the user management system. This pro
 
 **PUT /v1/user/:id:** updates the user with the specified id with the data in the request body. The API returns a 400 status code if the request tries to modify fields that should not be modified (e.g., username, account creation time, and account update time).
 
+
+**GET /v1/product/:id:** retrieves the product info with specified id, if it exists. This API doesn't require the request to have a Authorization header with the username and password encoded in base64. The API compares the provided credentials with the user data in the database and returns a 400, 200 status code and the user data, depending on the result of the authentication and the existence of the user.
+
+**POST /v1/product:** creates a new product with the data in the request body. This API requires the request to have a Authorization header with the username and password encoded in base64 and returns a 400 status code if either condition is not met. This API expects sku to have unique. If the credentials do not match 401 status code error is thrown. If the payload is valid, the API creates the product in DB, returning a 201 status code and the user data.
+
+**PUT /v1/product/:id:** updates the product with the specified id with the data in the request body. The API returns a 400 status code if the request tries to modify fields that should not be modified (e.g., owner_user_id, data_added and date_last_updated).
+
+**PUT /v1/product/:id:** To partially update the product with the specified id, the data in the request body this API must be leveraged. The API returns a 400 status code if the request tries to modify fields that should not be modified (e.g., owner_user_id, data_added and date_last_updated).
+
+**DELETE /v1/product/:id:** To delete the product from Database, the user should initially provide credentials. If authenticated, then if the resource is not present then 404 will be returned. If the resource exists, then 204 will be returned else appropriate status codes will be returned 
+
+
 ## Dependencies
 
 - express
