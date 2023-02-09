@@ -25,13 +25,9 @@ function checkEmptyInput(inputPass){
 
 function validateQuantity(quantity){
   
-  if(!validateId(quantity)){
-    const quantityParsed = parseInt(quantity);
-    if(quantityParsed >= 1 && quantityParsed <= 100 ){
-      return true;
-    }
-  }
-  return false;
+  const numericalQty = Number(quantity);
+  const validQuantity = numericalQty >= 0 && numericalQty <= 100;
+  return validQuantity;
 }
 
 function validInputsForProductForPatch(params) {
