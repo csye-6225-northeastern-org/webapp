@@ -111,7 +111,7 @@ exports.putProductInfo = ((req, res) => {
         res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
     }else if(validations.validateQuantity(quantity)){
         res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
-    }else if(!name || !description || !sku || !manufacturer || !quantity){
+    }else if(!name && !description && !sku && !manufacturer && !quantity){
         res.status(400).send({"message" : "400 Bad Request - All the mandatory fields need to be set"});
     }else{
         const credentials = checkAuthHeaders(req, res);
