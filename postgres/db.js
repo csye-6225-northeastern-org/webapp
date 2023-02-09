@@ -18,7 +18,7 @@ if(nodeEnv === 'development'){
     (
         async() => {
             await sequelize.sync({ 
-                // force: true 
+                force: true 
             });    
         }
     )();
