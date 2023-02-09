@@ -17,7 +17,9 @@ const sequelize = new Sequelize(dbName, userName, password,
 if(nodeEnv === 'development'){
     (
         async() => {
-            await sequelize.sync({ force: true });    
+            await sequelize.sync({ 
+                // force: true 
+            });    
         }
     )();
 }
