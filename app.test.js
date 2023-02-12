@@ -5,7 +5,7 @@ const validations = require('./utils/validations');
 describe('Test the GET /healthz endpoint', () => {
     it('should return 200 OK', async () => {
       const response = await request(app).get('/healthz');
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(200);
     });
   });
 
