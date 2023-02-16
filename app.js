@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser');
+const loggerMiddleware = require('./middleware/loggerMiddleware');
 
 const app = express()
 
@@ -10,6 +11,8 @@ app.use(
     extended: true,
   })
 );
+app.use(loggerMiddleware);
+
 
 const index_routes = require('./routes/index');
 const userRoutes = require('./routes/users');
