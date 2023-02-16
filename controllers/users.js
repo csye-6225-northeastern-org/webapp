@@ -41,51 +41,68 @@ async function getSingleUserRecordByUsername(username){
     })
 }
 
+// exports.getUserInfo = ((req, res) => {
+//     const inputCheckBool = checkIdInput(req, res);
+//     if(inputCheckBool){
+//         res.status(400).send({"message" : "Invalid Id in the request"});
+//     }else{
+//         const credentials = checkAuthHeaders(req, res);
+//         if(utils.isObjEmpty(credentials)){
+//             res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
+//         }else if(credentials.username==='' || credentials.password === ''){
+//             res.status(401).send({"message" : "Unauthorized - Missing username/password"});
+//         }
+//         else{
+//             const recordFromDB = getSingleUserRecordByUsername(credentials.username)
+//             recordFromDB.then(result =>{
+//                 if(!result){
+//                     res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
+//                 }else{
+//                     // Got a row from DB. Need to check if the same username and password
+//                     if(result.dataValues.userName === credentials.username){
+//                         authUtils.comparePassword(credentials.password, result.dataValues.password)
+//                         .then(passwordCompare =>{
+//                             if(passwordCompare){
+//                                 if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
+//                                     res.status(403).send({"message" : "403 Forbidden - Id incorrect"});
+//                                 }else{
+//                                     res.status(200).send({
+//                                         "id" : result.getDataValue("id"),
+//                                         "first_name" : result.getDataValue("firstName"),
+//                                         "last_name" : result.getDataValue("lastName"),
+//                                         "username" : result.getDataValue("userName"),
+//                                         "account_created" : result.getDataValue("account_created"),
+//                                         "account_updated" : result.getDataValue("account_updated")
+//                                     });
+//                                 }
+//                             }else{
+//                                 res.status(401).send({"message" : "401 Unauthorized - Invalid Password"});
+//                             }
+//                         }) 
+//                     }
+//                     else{
+//                         res.status(401).send({"message" : "401 Unauthorized"});
+//                     }
+//                 }
+//             })
+//         }
+//     }
+// });
+
 exports.getUserInfo = ((req, res) => {
     const inputCheckBool = checkIdInput(req, res);
     if(inputCheckBool){
         res.status(400).send({"message" : "Invalid Id in the request"});
     }else{
-        const credentials = checkAuthHeaders(req, res);
-        if(utils.isObjEmpty(credentials)){
-            res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
-        }else if(credentials.username==='' || credentials.password === ''){
-            res.status(401).send({"message" : "Unauthorized - Missing username/password"});
-        }
-        else{
-            const recordFromDB = getSingleUserRecordByUsername(credentials.username)
-            recordFromDB.then(result =>{
-                if(!result){
-                    res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
-                }else{
-                    // Got a row from DB. Need to check if the same username and password
-                    if(result.dataValues.userName === credentials.username){
-                        authUtils.comparePassword(credentials.password, result.dataValues.password)
-                        .then(passwordCompare =>{
-                            if(passwordCompare){
-                                if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
-                                    res.status(403).send({"message" : "403 Forbidden - Id incorrect"});
-                                }else{
-                                    res.status(200).send({
-                                        "id" : result.getDataValue("id"),
-                                        "first_name" : result.getDataValue("firstName"),
-                                        "last_name" : result.getDataValue("lastName"),
-                                        "username" : result.getDataValue("userName"),
-                                        "account_created" : result.getDataValue("account_created"),
-                                        "account_updated" : result.getDataValue("account_updated")
-                                    });
-                                }
-                            }else{
-                                res.status(401).send({"message" : "401 Unauthorized - Invalid Password"});
-                            }
-                        }) 
-                    }
-                    else{
-                        res.status(401).send({"message" : "401 Unauthorized"});
-                    }
-                }
-            })
-        }
+        const result = req.userInfo;           
+        res.status(200).send({
+            "id" : result.getDataValue("id"),
+            "first_name" : result.getDataValue("firstName"),
+            "last_name" : result.getDataValue("lastName"),
+            "username" : result.getDataValue("userName"),
+            "account_created" : result.getDataValue("account_created"),
+            "account_updated" : result.getDataValue("account_updated")
+        });
     }
 });
 
