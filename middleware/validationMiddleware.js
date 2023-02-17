@@ -1,4 +1,5 @@
 const UserService = require("../services/userService");
+const ProductService = require("../services/productService");
 const validationUtil = require("../utils/validations")
 
 exports.validateParams = ((req, res, next)  =>  {
@@ -55,4 +56,22 @@ exports.validateBodyPutUser = ( (req, res, next) => {
     }else{
         next();
     }
+});
+
+exports.validateDeleteProduct = ((req, res, next) => {
+    let productService = new ProductService();
+    this.validateParams(req, res, next);
+    console.log(" ********###### Inside validate Delete ********##### ");
+    const id = req.params.id;
+    productService.findOne(id)
+    .then(productRow=>{
+        if(!productRow){
+            res.status(404).send({"message" : "404 Not Found"});
+        }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
+            res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
+        }else{
+            // req.prodDetails = productRow
+            next();
+        }
+    })
 });

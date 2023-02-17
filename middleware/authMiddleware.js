@@ -12,13 +12,11 @@ async function authMiddleware(req, res, next) {
   }
 
   try {
-    console.log("***** Entered Username : ", user.name);
-    console.log("***** Entered Password : ", user.pass);
+
     userService.findOneByUsername(user.name)
     .then(result => {
-        // console.log("******* Result from authMiddleware : ", result);
         if(!result){
-            res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
+            res.status(401).send({"message" : "401 Unauthorized "});
             return;
         }else{
             if(result.dataValues.userName === user.name){
