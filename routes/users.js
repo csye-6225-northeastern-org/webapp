@@ -10,6 +10,6 @@ router.get("/:id", [validationMiddleware.validateParams, authMiddleware], usersC
 
 router.put("/:id", usersController.putUserInfo);
 
-router.post("", usersController.postUserInfo);
+router.post("", [validationMiddleware.validateBodyPostUser], usersController.postUserInfo);
 
 module.exports = router;

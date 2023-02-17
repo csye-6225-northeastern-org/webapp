@@ -17,20 +17,32 @@ exports.validateParams = ((req, res, next)  =>  {
             }
         })
     }
-})
+});
 
-// function validateData(req, res, next){
 
-//     const validationRules = [
+exports.validateBodyPostUser = ((req, res, next) => {
+    let userService =  new UserService();
+    const {first_name, last_name, password, username, account_created, account_updated} = req.body;
+    if(account_created || account_updated){
+        res.status(400).send({"message" : "400 Bad Request. Cannot send account_created / account_updated "});
+    }else{
+        if(first_name && last_name && password && username){
+            userService.findOneByUsername(username)
+            .then(record => {
+                if(record || !validationUtil.validateEmail(username) || validationUtil.checkEmptyInput(first_name) ||
+                        validationUtil.checkEmptyInput(last_name) || validationUtil.checkEmptyInput(password)){
+                    res.status(400).send({"message" : "400 Bad Request. Invalid payload"});  
+                }else{
+                    next();
+                }
+            })
 
-//     ]
+        }else{
+            res.status(400).send({"message" : "400 Bad Request. Not all fields are set"})
+        }
+    }  
+});
 
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         return next();
-//     }
-
-//     return res.status(400).json({ errors: errors.array() });
-// }
-
-// module.exports = validateParams;
+exports.validateBodyPutUser = ( (req, res, next) => {
+    
+});

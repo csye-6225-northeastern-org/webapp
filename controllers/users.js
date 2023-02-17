@@ -172,43 +172,72 @@ exports.putUserInfo = ((req, res) =>{
     }
 });
 
+// exports.postUserInfo = ((req, res) =>{
+//     const {first_name, last_name, password, username, account_created, account_updated} = req.body;
+//     if(account_created || account_updated){
+//         res.status(400).send({"message" : "400 Bad Request. Cannot send account_created / account_updated "});
+//     }else{
+//         const userRecord = getSingleUserRecordByUsername(username);
+//         userRecord.then(record => {
+//             if(record || !validations.validateEmail(username) || validations.checkEmptyInput(first_name) ||
+//             validations.checkEmptyInput(last_name) || validations.checkEmptyInput(password)){
+//                 res.status(400).send({"message" : "400 Bad Request. Invalid payload"});  
+//             }else{
+//                 authUtils.generateHash(password)
+//                 .then(hash => {
+//                     User.create({
+//                         firstName: first_name,
+//                         lastName: last_name,
+//                         password: hash,
+//                         userName: username,
+//                         account_created : new Date(),
+//                         account_updated : new Date() 
+//                     }).then( result =>{
+//                         // console.log("Result : ", result);
+//                         res.status(201).send(
+//                             {
+//                                 "id" : result.getDataValue("id"),
+//                                 "first_name" : result.getDataValue("firstName"),
+//                                 "last_name" : result.getDataValue("lastName"),
+//                                 "username" : result.getDataValue("userName"),
+//                                 "account_created" : result.getDataValue("account_created"),
+//                                 "account_updated" : result.getDataValue("account_updated")
+//                         });
+//                     })
+//                     .catch((error) => {
+//                         res.status(400).send({"message" : "400 Bad Request", error});
+//                     })
+//                 })
+//             }
+//         })
+//     }
+// });
+
 exports.postUserInfo = ((req, res) =>{
-    const {first_name, last_name, password, username, account_created, account_updated} = req.body;
-    if(account_created || account_updated){
-        res.status(400).send({"message" : "400 Bad Request. Cannot send account_created / account_updated "});
-    }else{
-        const userRecord = getSingleUserRecordByUsername(username);
-        userRecord.then(record => {
-            if(record || !validations.validateEmail(username) || validations.checkEmptyInput(first_name) ||
-            validations.checkEmptyInput(last_name) || validations.checkEmptyInput(password)){
-                res.status(400).send({"message" : "400 Bad Request. Invalid payload"});  
-            }else{
-                authUtils.generateHash(password)
-                .then(hash => {
-                    User.create({
-                        firstName: first_name,
-                        lastName: last_name,
-                        password: hash,
-                        userName: username,
-                        account_created : new Date(),
-                        account_updated : new Date() 
-                    }).then( result =>{
-                        // console.log("Result : ", result);
-                        res.status(201).send(
-                            {
-                                "id" : result.getDataValue("id"),
-                                "first_name" : result.getDataValue("firstName"),
-                                "last_name" : result.getDataValue("lastName"),
-                                "username" : result.getDataValue("userName"),
-                                "account_created" : result.getDataValue("account_created"),
-                                "account_updated" : result.getDataValue("account_updated")
-                        });
-                    })
-                    .catch((error) => {
-                        res.status(400).send({"message" : "400 Bad Request", error});
-                    })
-                })
-            }
+    const {first_name, last_name, password, username} = req.body;
+    authUtils.generateHash(password)
+    .then(hash => {
+        User.create({
+            firstName: first_name,
+            lastName: last_name,
+            password: hash,
+            userName: username,
+            account_created : new Date(),
+            account_updated : new Date() 
+        }).then( result =>{
+                res.status(201).send(
+                    {
+                        "id" : result.getDataValue("id"),
+                        "first_name" : result.getDataValue("firstName"),
+                        "last_name" : result.getDataValue("lastName"),
+                        "username" : result.getDataValue("userName"),
+                        "account_created" : result.getDataValue("account_created"),
+                        "account_updated" : result.getDataValue("account_updated")
+                }
+                );
+            })
+            .catch((error) => {
+                res.status(400).send({"message" : "400 Bad Request", error});
+            })
         })
-    }
 });
