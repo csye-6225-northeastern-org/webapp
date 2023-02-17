@@ -43,64 +43,86 @@ exports.getProductInfo = ((req, res) => {
     })
 });
 
+// exports.postProductInfo = ((req, res) => {
+//     const invalidRequestBody = JSON.stringify(req.body)==="{}";
+//     const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
+//     if(!name || !description || !sku || !manufacturer || !quantity){
+//         res.status(400).send({"message" : "400 Bad Request. Not all mandatory fields are passed "});
+//     }else if(date_added || date_last_updated || owner_user_id){
+//         res.status(400).send({"message" : "400 Bad Request. Cannot send date_added / date_last_updated /owner_user_id"});
+//     }else if(invalidRequestBody){
+//         res.status(400).send({"message" : "400 Bad Request. Empty payload sent"});
+//     }
+//     else if(!name || !description || !sku || !manufacturer || !quantity){
+//         res.status(400).send({"message" : "400 Bad Request. Invalid Data sent in name/description/manufacturer/sku/quantity"})
+//     }
+//     else if(!validations.validateQuantity(quantity)){
+//         res.status(400).send({"message" : "400 Bad Request. Invalid Quantity Sent in the payload"});
+//     }else{
+//         const credentials = checkAuthHeaders(req, res);
+//         if(utils.isObjEmpty(credentials)){
+//             res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
+//         }else if(credentials.username==='' || credentials.password === ''){
+//             res.status(401).send({"message" : "Unauthorized - Missing username/password"});
+//         }else{
+//             userService.findOneByUsername(credentials.username)
+//                 .then( result =>{
+//                     if(!result){
+//                         res.status(401).send({"message" : "401 Unauthorized. No user found"});
+//                     }else{
+//                         if(result.dataValues.userName === credentials.username){
+//                             authUtils.comparePassword(credentials.password, result.dataValues.password)
+//                             .then(cmpResult =>{
+//                                 if(cmpResult){
+//                                     // If password is valid, then we check if sku exists. If exists throw 400 - Bad request
+//                                     productService.findOrCreate(sku, {
+//                                                     name,
+//                                                     description,
+//                                                     sku,
+//                                                     manufacturer,
+//                                                     quantity,
+//                                                     owner_user_id : result.dataValues.id,
+//                                                     date_added : new Date(),
+//                                                     date_last_updated : new Date() 
+//                                                 }).then(result => {
+//                                                     const [createdRow, created] = result;
+//                                                     if(created){
+//                                                         res.status(201).send(createdRow);
+//                                                     }else{
+//                                                         res.status(400).send({"message" : "400 Bad Request. SKU Already exists"});
+//                                                     }
+//                                                 });
+//                                 }else{
+//                                     res.status(401).send({"message" : "401 Unauthorized"});
+//                                 }
+//                             })
+//                         }  
+//                     }
+//             })
+//         }
+//     }
+// });
+
 exports.postProductInfo = ((req, res) => {
-    const invalidRequestBody = JSON.stringify(req.body)==="{}";
-    const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
-    if(!name || !description || !sku || !manufacturer || !quantity){
-        res.status(400).send({"message" : "400 Bad Request. Not all mandatory fields are passed "});
-    }else if(date_added || date_last_updated || owner_user_id){
-        res.status(400).send({"message" : "400 Bad Request. Cannot send date_added / date_last_updated /owner_user_id"});
-    }else if(invalidRequestBody){
-        res.status(400).send({"message" : "400 Bad Request. Empty payload sent"});
-    }
-    else if(!name || !description || !sku || !manufacturer || !quantity){
-        res.status(400).send({"message" : "400 Bad Request. Invalid Data sent in name/description/manufacturer/sku/quantity"})
-    }
-    else if(!validations.validateQuantity(quantity)){
-        res.status(400).send({"message" : "400 Bad Request. Invalid Quantity Sent in the payload"});
-    }else{
-        const credentials = checkAuthHeaders(req, res);
-        if(utils.isObjEmpty(credentials)){
-            res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
-        }else if(credentials.username==='' || credentials.password === ''){
-            res.status(401).send({"message" : "Unauthorized - Missing username/password"});
-        }else{
-            userService.findOneByUsername(credentials.username)
-                .then( result =>{
-                    if(!result){
-                        res.status(401).send({"message" : "401 Unauthorized. No user found"});
-                    }else{
-                        if(result.dataValues.userName === credentials.username){
-                            authUtils.comparePassword(credentials.password, result.dataValues.password)
-                            .then(cmpResult =>{
-                                if(cmpResult){
-                                    // If password is valid, then we check if sku exists. If exists throw 400 - Bad request
-                                    productService.findOrCreate(sku, {
-                                                    name,
-                                                    description,
-                                                    sku,
-                                                    manufacturer,
-                                                    quantity,
-                                                    owner_user_id : result.dataValues.id,
-                                                    date_added : new Date(),
-                                                    date_last_updated : new Date() 
-                                                }).then(result => {
-                                                    const [createdRow, created] = result;
-                                                    if(created){
-                                                        res.status(201).send(createdRow);
-                                                    }else{
-                                                        res.status(400).send({"message" : "400 Bad Request. SKU Already exists"});
-                                                    }
-                                                });
-                                }else{
-                                    res.status(401).send({"message" : "401 Unauthorized"});
-                                }
-                            })
-                        }  
-                    }
-            })
-        }
-    }
+    const {name, description, sku, manufacturer, quantity} = req.body;
+    const result = req.userInfo; 
+    productService.findOrCreate(sku, {
+            name,
+            description,
+            sku,
+            manufacturer,
+            quantity,
+            owner_user_id : result.getDataValue("id"),
+            date_added : new Date(),
+            date_last_updated : new Date() 
+        }).then(result => {
+            const [createdRow, created] = result;
+            if(created){
+                res.status(201).send(createdRow);
+            }else{
+                res.status(400).send({"message" : "400 Bad Request. SKU Already exists"});
+            }
+        });
 });
 
 exports.putProductInfo = ((req, res) => {
