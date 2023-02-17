@@ -11,9 +11,10 @@ router.put("/:id", productController.putProductInfo);
 
 router.patch("/:id", productController.patchProductInfo);
 
-router.post("", productController.postProductInfo);
+router.post("", [ validationMiddleware.validatePostProductInfo,authMiddleware], 
+                    productController.postProductInfo);
 
-router.delete("/:id", [validationMiddleware.validateParams, authMiddleware],
+router.delete("/:id", [validationMiddleware.validateDeleteProduct, authMiddleware],
                      productController.deleteProductInfo);
 
 module.exports = router;

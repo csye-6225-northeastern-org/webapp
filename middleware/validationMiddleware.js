@@ -75,3 +75,27 @@ exports.validateDeleteProduct = ((req, res, next) => {
         }
     })
 });
+
+exports.validatePostProductInfo = ((req, res, next) => {
+    const invalidRequestBody = JSON.stringify(req.body)==="{}";
+    const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
+    if(!name || !description || !sku || !manufacturer || !quantity){
+        res.status(400).send({"message" : "400 Bad Request. Not all mandatory fields are passed "});
+    }else if(date_added || date_last_updated || owner_user_id){
+        res.status(400).send({"message" : "400 Bad Request. Cannot send date_added / date_last_updated /owner_user_id"});
+    }else if(invalidRequestBody){
+        res.status(400).send({"message" : "400 Bad Request. Empty payload sent"});
+    }
+    else if(!name || !description || !sku || !manufacturer || !quantity){
+        res.status(400).send({"message" : "400 Bad Request. Invalid Data sent in name/description/manufacturer/sku/quantity"})
+    }
+    else if(!validationUtil.validateQuantity(quantity)){
+        res.status(400).send({"message" : "400 Bad Request. Invalid Quantity Sent in the payload"});
+    }else{
+        next();
+    }
+});
+
+exports.validateUpdateProduct = ((req, res, next) =>{
+    
+});
