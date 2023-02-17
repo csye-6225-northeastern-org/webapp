@@ -33,10 +33,6 @@ function checkIdInput(req, res){
 
 exports.getProductInfo = ((req, res) => {
     const { id } = req.params;
-    // const inputCheckBool = checkIdInput(req, res);
-    // if(inputCheckBool){
-    //     res.status(400).send({"message" : "Bad Request-Invalid Id in the request"});
-    // }else{
     productService.findOne(id)
     .then(row =>{
         if(!row){
@@ -45,7 +41,6 @@ exports.getProductInfo = ((req, res) => {
             res.status(200).send(row.dataValues);
         }
     })
-    // }
 });
 
 exports.postProductInfo = ((req, res) => {
@@ -310,52 +305,12 @@ exports.patchProductInfo = ((req, res) => {
 
 exports.deleteProductInfo = ((req, res) => {
     const { id } = req.params;
-    // const inputCheckBool = checkIdInput(req, res);
-    // if(inputCheckBool){
-    //     res.status(400).send({"message" : "Bad Request-Invalid Id in the request"});
-    // }else{
-        // const credentials = checkAuthHeaders(req, res);
-        // if(utils.isObjEmpty(credentials)){
-        //     res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
-        // }else if(credentials.username==='' || credentials.password === ''){
-        //     res.status(401).send({"message" : "Unauthorized - Missing username/password"});
-        // }else{
-            // userService.findOneByUsername(credentials.username)
-            // .then( result =>{
-                // if(!result){
-                //     res.status(401).send({"message" : "401 Unauthorized. No user found"});
-                // }else{
-                    // Got a row from DB. Need to check if the same username and password
-                    // if(result.dataValues.userName === credentials.username){
-                    //     authUtils.comparePassword(credentials.password, result.dataValues.password)
-                    //     .then(cmpResult => {
-                    //         if(cmpResult){
-                    //             const userIdAccessing = result.getDataValue("id");
-                                // productService.findOne(id)
-                                // .then(productRow => {
-                                //     if(!productRow){
-                                //         res.status(404).send({"message" : "404 Not Found"});
-                                //     }else if(productRow.dataValues.owner_user_id !==  userIdAccessing){
-                                //         res.status(403).send({"message" : "403 Forbidden - Not allowed to delete"});
-                                //     }else{
-                                        productService.deleteProductInfo(id)
-                                        .then( deletedRow => {
-                                            if(deletedRow > 0){
-                                                res.status(204).send({}); 
-                                            }else{
-                                                res.status(404).send({"message" : "404 Not Found"});
-                                            }
-                                        })
-                                        
-                                //     }
-                                // }) 
-                    //         }else{
-                    //             res.status(401).send({"message" : "401 Unauthorized"});
-                    //         }
-                    //     })
-                    // }
-                // }
-            // })
-        // }
-    // }
+    productService.deleteProductInfo(id)
+    .then( deletedRow => {
+        if(deletedRow > 0){
+            res.status(204).send({}); 
+        }else{
+            res.status(404).send({"message" : "404 Not Found"});
+        }
+    })    
 });
