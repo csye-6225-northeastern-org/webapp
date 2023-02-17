@@ -30,7 +30,7 @@ async function authMiddleware(req, res, next) {
                             next();
                         }else{
                             if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
-                                res.status(403).send({"message" : "403 Forbidden - Id incorrect"});
+                                res.status(403).send({"message" : "403 Forbidden - Not Allowed"});
                                 return;
                             }else{
                                 req.userInfo = result

@@ -32,19 +32,19 @@ function checkIdInput(req, res){
 
 exports.getProductInfo = ((req, res) => {
     const { id } = req.params;
-    const inputCheckBool = checkIdInput(req, res);
-    if(inputCheckBool){
-        res.status(400).send({"message" : "Bad Request-Invalid Id in the request"});
-    }else{
-        productService.findOne(id)
-        .then(row =>{
-            if(!row){
-                res.status(404).send({"message" : "404 - No Product-id found"})
-            }else{
-                res.status(200).send(row.dataValues);
-            }
-        })
-    }
+    // const inputCheckBool = checkIdInput(req, res);
+    // if(inputCheckBool){
+    //     res.status(400).send({"message" : "Bad Request-Invalid Id in the request"});
+    // }else{
+    productService.findOne(id)
+    .then(row =>{
+        if(!row){
+            res.status(404).send({"message" : "404 - No Product-id found"})
+        }else{
+            res.status(200).send(row.dataValues);
+        }
+    })
+    // }
 });
 
 exports.postProductInfo = ((req, res) => {
