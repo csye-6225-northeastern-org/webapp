@@ -8,7 +8,7 @@ const usersController = require("../controllers/users");
 
 router.get("/:id", [validationMiddleware.validateParams, authMiddleware], usersController.getUserInfo);
 
-router.put("/:id", usersController.putUserInfo);
+router.put("/:id", [validationMiddleware.validateBodyPutUser, authMiddleware], usersController.putUserInfo);
 
 router.post("", [validationMiddleware.validateBodyPostUser], usersController.postUserInfo);
 

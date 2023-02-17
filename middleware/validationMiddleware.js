@@ -44,5 +44,15 @@ exports.validateBodyPostUser = ((req, res, next) => {
 });
 
 exports.validateBodyPutUser = ( (req, res, next) => {
-    
+    this.validateParams(req, res, next);
+    console.log("********####### Inside ValidateBody PUT after validate Params ********####### ")
+    const {password, username, account_created, account_updated} = req.body;
+
+    if(username || account_created || account_updated){
+        res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
+    }else if(validationUtil.checkEmptyInput(password)){
+        res.status(400).send({"message" : "400 Bad Request. Empty password sent"});
+    }else{
+        next();
+    }
 });
