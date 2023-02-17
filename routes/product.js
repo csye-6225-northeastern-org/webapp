@@ -13,6 +13,7 @@ router.patch("/:id", productController.patchProductInfo);
 
 router.post("", productController.postProductInfo);
 
-router.delete("/:id", productController.deleteProductInfo);
+router.delete("/:id", [validationMiddleware.validateParams, authMiddleware],
+                     productController.deleteProductInfo);
 
 module.exports = router;
