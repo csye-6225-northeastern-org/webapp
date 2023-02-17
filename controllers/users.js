@@ -106,70 +106,105 @@ exports.getUserInfo = ((req, res) => {
     }
 });
 
-exports.putUserInfo = ((req, res) =>{
-    const inputCheckBool = checkIdInput(req, res);
-    const {id} = req.params;
-    if(inputCheckBool){
-        res.status(400).send({"message" : "Invalid Id in the request"});
-    }else{
-        const {first_name, last_name, password, username, account_created, account_updated} = req.body;
+// exports.putUserInfo = ((req, res) =>{
+//     const inputCheckBool = checkIdInput(req, res);
+//     const {id} = req.params;
+//     if(inputCheckBool){
+//         res.status(400).send({"message" : "Invalid Id in the request"});
+//     }else{
+//         const {first_name, last_name, password, username, account_created, account_updated} = req.body;
 
-        if(username || account_created || account_updated){
-            res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
-        }else if(validations.checkEmptyInput(password)){
-            res.status(400).send({"message" : "400 Bad Request. Empty password sent"});
-        }
-        else{
-            const credentials = checkAuthHeaders(req, res);
-            if(utils.isObjEmpty(credentials)){
-                res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
-            }else if(credentials.username==='' || credentials.password === ''){
-                res.status(401).send({"message" : "Unauthorized - Missing username/password"});
-            }else{
-                const recordFromDB = getSingleUserRecordByUsername(credentials.username);
-                recordFromDB.then(result =>{
-                    if(!result){
-                        res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
-                    }else{
-                        // Got a row from DB. Need to check if the same username and password
-                        if(result.dataValues.userName === credentials.username){
-                            authUtils.comparePassword(credentials.password, result.dataValues.password)
-                            .then( cmpResult => {
-                                if(cmpResult){
-                                    if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
-                                        res.status(403).send({"message" : "403 Forbidden"});
-                                    }else{
-                                        authUtils.generateHash(credentials.password)
-                                        .then( hash =>{
-                                            User.update({
-                                                    firstName: first_name,
-                                                    lastName: last_name,
-                                                    password: hash,
-                                                    account_updated : new Date()
-                                                },{
-                                                    where : {id}
-                                            })
-                                            .then( result => {res.status(204).send({}); })
-                                            .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
-                                        })
-                                    }    
-                                }
-                                else{
-                                    res.status(401).send({"message" : "401 Unauthorized"});
-                                }
-                            })
-                            .catch( error => {
-                                res.status(401).send({"message" : "401 Unauthorized", error});
-                            })
-                        }else{
-                            res.status(401).send({"message" : "401 Unauthorized"});
-                        }
-                    }
+//         if(username || account_created || account_updated){
+//             res.status(400).send({"message" : "400 Bad Request. Cannot update username / account_created / account_updated "});
+//         }else if(validations.checkEmptyInput(password)){
+//             res.status(400).send({"message" : "400 Bad Request. Empty password sent"});
+//         }
+//         else{
+//             const credentials = checkAuthHeaders(req, res);
+//             if(utils.isObjEmpty(credentials)){
+//                 res.status(401).send({"message" : "Unauthorized - No Authorization found in headers"});
+//             }else if(credentials.username==='' || credentials.password === ''){
+//                 res.status(401).send({"message" : "Unauthorized - Missing username/password"});
+//             }else{
+//                 const recordFromDB = getSingleUserRecordByUsername(credentials.username);
+//                 recordFromDB.then(result =>{
+//                     if(!result){
+//                         res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
+//                     }else{
+//                         // Got a row from DB. Need to check if the same username and password
+//                         if(result.dataValues.userName === credentials.username){
+//                             authUtils.comparePassword(credentials.password, result.dataValues.password)
+//                             .then( cmpResult => {
+//                                 if(cmpResult){
+//                                     if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
+//                                         res.status(403).send({"message" : "403 Forbidden"});
+//                                     }else{
+//                                         authUtils.generateHash(credentials.password)
+//                                         .then( hash =>{
+//                                             User.update({
+//                                                     firstName: first_name,
+//                                                     lastName: last_name,
+//                                                     password: hash,
+//                                                     account_updated : new Date()
+//                                                 },{
+//                                                     where : {id}
+//                                             })
+//                                             .then( result => {res.status(204).send({}); })
+//                                             .catch((error) => {res.status(403).send({"message" : "403 Forbidden"}); })
+//                                         })
+//                                     }    
+//                                 }
+//                                 else{
+//                                     res.status(401).send({"message" : "401 Unauthorized"});
+//                                 }
+//                             })
+//                             .catch( error => {
+//                                 res.status(401).send({"message" : "401 Unauthorized", error});
+//                             })
+//                         }else{
+//                             res.status(401).send({"message" : "401 Unauthorized"});
+//                         }
+//                     }
                     
-                })
-            }
-        }
-    }
+//                 })
+//             }
+//         }
+//     }
+// });
+
+exports.putUserInfo = ((req, res) =>{
+    const {id} = req.params;
+    const {first_name, last_name, password} = req.body;
+
+    const userFields = { 
+        ...(first_name && { firstName : first_name }), 
+        ...(last_name && { lastName : last_name }),
+        account_updated : new Date()
+    };
+
+    if(!password){
+
+        User.update(userFields,{
+            where : {id}
+        })
+        .then( result => {res.status(204).send({}); })
+        .catch((error) => {
+            console.log("&&&&&& error : ", error);
+            res.status(403).send({"message" : "403 Forbidden - Controller"}) 
+        });
+    }else{
+        authUtils.generateHash(password)
+        .then( hash =>{
+            User.update({
+                    ...userFields,
+                    password: hash
+                },{
+                    where : {id}
+            })
+            .then( result => {res.status(204).send({}); })
+            .catch((error) => {res.status(403).send({"message" : "403 Forbidden - Controller", error}); })
+        })
+    }    
 });
 
 // exports.postUserInfo = ((req, res) =>{

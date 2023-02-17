@@ -16,7 +16,7 @@ async function authMiddleware(req, res, next) {
     console.log("***** Entered Password : ", user.pass);
     userService.findOneByUsername(user.name)
     .then(result => {
-        console.log("******* Result from authMiddleware : ", result);
+        // console.log("******* Result from authMiddleware : ", result);
         if(!result){
             res.status(401).send({"message" : "401 Unauthorized - No Authorization found"});
             return;
@@ -51,17 +51,7 @@ async function authMiddleware(req, res, next) {
     .catch(error => {
         console.log("***** Error : ", error);
     })
-    // console.log("User found : ", foundUser);
-
-    // if (!foundUser || user.pass !== foundUser.password) {
-    //   res.status(401).send({"message" : "401 Unauthorized - User not found"});
-    //   return;
-    // }
-    // // Add the user to the request object
-    // req.user = foundUser;
-
-    // // Call the next middleware function
-    // next();
+   
   } catch (err) {
     res.status(500).send('Internal Server Error', err);
   }
