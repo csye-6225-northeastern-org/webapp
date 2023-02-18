@@ -297,7 +297,9 @@ exports.putProductInfo = ((req, res) => {
 
 
 exports.patchProductInfo = ((req, res) => {
-
+    const id = req.params.id;
+    console.log("Request Body : ", req.body);
+    console.log("Id  : ", id);
     const {name, description, sku, manufacturer, quantity} = req.body;
     const productFields = { 
         ...(name && { name }), 
