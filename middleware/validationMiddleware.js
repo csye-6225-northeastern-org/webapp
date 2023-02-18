@@ -97,5 +97,31 @@ exports.validatePostProductInfo = ((req, res, next) => {
 });
 
 exports.validateUpdateProduct = ((req, res, next) =>{
-    
+    const { id } = req.params;
+    const {name, description, sku, manufacturer, quantity, date_added, date_last_updated, owner_user_id} = req.body;
+    // const inputCheckBool = checkIdInput(req, res);
+    const invalidRequestBody = JSON.stringify(req.body)==="{}";
+    let productService = new ProductService();
+    if(!validationUtil.validateId(id)){
+        return res.status(400).send({ "message" : '400 Bad Request' });
+    }else if(invalidRequestBody){
+        res.status(400).send({"message" : "400 Bad Request - Empty Payload Sent"});
+    }else if(date_added || date_last_updated || owner_user_id){
+        res.status(400).send({"message" : "400 Bad Request - Cannot send date_added / date_last_updated /owner_user_id"});
+    }else if(!validationUtil.validInputsForProductForPatch(req.body)){
+        res.status(400).send({"message" : "400 Bad Request - Invalid Input in payload"});
+    }else if(!validationUtil.validateQuantity(quantity)){
+        res.status(400).send({"message" : "400 Bad Request - Invalid Quantity Sent in the payload"});
+    }else{
+        productService.findOne(id)
+        .then(productRow =>{
+            if(!productRow){
+                res.status(400).send({"message" : "400 Bad Request"});
+            }else{
+                req.prodInfo = productRow
+                next();
+            }
+        })
+    }
+
 });

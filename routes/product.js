@@ -7,14 +7,16 @@ const productController = require("../controllers/product");
 
 router.get("/:id", [validationMiddleware.validateParams], productController.getProductInfo);
 
-router.put("/:id", productController.putProductInfo);
+router.put("/:id", [validationMiddleware.validateUpdateProduct, authMiddleware], 
+                productController.putProductInfo);
 
-router.patch("/:id", productController.patchProductInfo);
+router.patch("/:id", [validationMiddleware.validateUpdateProduct, authMiddleware],
+                productController.patchProductInfo);
 
 router.post("", [ validationMiddleware.validatePostProductInfo,authMiddleware], 
                     productController.postProductInfo);
 
 router.delete("/:id", [validationMiddleware.validateDeleteProduct, authMiddleware],
-                     productController.deleteProductInfo);
+                    productController.deleteProductInfo);
 
 module.exports = router;
