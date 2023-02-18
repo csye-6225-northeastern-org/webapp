@@ -7,10 +7,10 @@ const productController = require("../controllers/product");
 
 router.get("/:id", [validationMiddleware.validateParams], productController.getProductInfo);
 
-router.put("/:id", [validationMiddleware.validateUpdateProduct, authMiddleware], 
+router.put("/:id", [validationMiddleware.validatePutProduct, authMiddleware], 
                 productController.putProductInfo);
 
-router.patch("/:id", [validationMiddleware.validateUpdateProduct, authMiddleware],
+router.patch("/:id", [validationMiddleware.validatePatchProduct, authMiddleware],
                 productController.patchProductInfo);
 
 router.post("", [ validationMiddleware.validatePostProductInfo,authMiddleware], 
