@@ -4,8 +4,6 @@ on:
     push:
       branches:
         - a4_packer_changes
-  # pull_request:
-  #   branches: [ main ]
 
 jobs:
   build:
