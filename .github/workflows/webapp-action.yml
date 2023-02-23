@@ -19,23 +19,22 @@ jobs:
       - run: npm install
       - run: npm test
 
-      - name: Install Packer
-        run: |
-          wget https://releases.hashicorp.com/packer/1.7.3/packer_1.7.3_linux_amd64.zip
-          unzip packer_1.7.3_linux_amd64.zip
-          sudo mv packer /usr/local/bin/
-          packer version
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: "1.8.3" # or `latest`
 
       - name : Zip the repo code
         run: zip -r webapp.zip .
         
       - name: Init Packer
         run: |
-          packer init ./aws-linux.pkr.hcl
+          packer init ./packer/packer.pkr.hcl
 
       - name: Validate Packer
         run: |
-          if ! packer validate ./aws-linux.pkr.hcl; then
+          if ! packer validate ./packer/packer.pkr.hcl; then
               echo "Invalid AMI template. Please correct the errors and try again."
               exit 1
           fi
