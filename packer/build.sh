@@ -6,6 +6,7 @@ CODE_BASE=/home/ec2-user/webapp/
 sleep 30
 
 sudo yum update -y
+sudo yum upgrade -y
 # Installing git
 sudo yum install -y git
 
@@ -40,12 +41,14 @@ sudo -u postgres psql -c 'GRANT ALL PRIVILEGES ON DATABASE csye6225 TO "ec2-user
 
 sudo yum install unzip -y
 
+sudo mv /tmp/webapp.zip /home/ec2-user/webapp.zip
+
 if [ -f "$FILE" ]; then
     echo "$FILE exists. Unzipping the file"
     unzip $FILE -d $EXTRACTED_PATH
 fi
 
-git clone https://icecube-pixel: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@github.com/csye-6225-northeastern-org/webapp.git
+# git clone https://icecube-pixel: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@github.com/csye-6225-northeastern-org/webapp.git
 
 # installing dependencies
 cd $CODE_BASE

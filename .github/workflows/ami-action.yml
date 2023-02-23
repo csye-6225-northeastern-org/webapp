@@ -1,0 +1,45 @@
+name: build-ami
+on:
+  workflow_dispatch:
+    push:
+      branches:
+        - a4_packer_changes
+
+jobs:
+  build-ami:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: "1.8.3" # or `latest`
+
+      - name : Zip the repo code
+        run: zip -r webapp.zip .
+      
+      - name: Run `packer init`
+        id: init
+        run: "packer init ./packer/packer.pkr.hcl"
+
+      - name: Run packer validate
+        id: validate
+        run: "packer validate ./packer/packer.pkr.hcl"
+
+      - name: Build AMI with Packer
+        run: |
+          packer build \
+          -var "region=${{ vars.REGION }}" \
+          -var "ssh_user=${{ vars.SSH_USER }}" \
+          -var "HOST=${{ vars.HOST }}" \
+          -var "USERNAME=${{ secrets.USERNAME }}" \
+          -var "PASSWORD=${{ secrets.PASSWORD }}" \
+          -var "DB_NAME=${{ vars.DB_NAME }}" \
+          -var "DIALECT=${{ vars.DIALECT }}" \
+          -var "PORT=${{ vars.PORT }}" \
+          -var "NODE_ENV=${{ vars.NODE_ENV }}" \
+          -var "account_to_share=${{ vars.ACCOUNT_TO_SHARE }}" \
+          -var "instance_type=${{ vars.INSTANCE_TYPE }}" \
+          -var "profile=${{ vars.PROFILE }}" \
+          .

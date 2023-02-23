@@ -42,11 +42,11 @@ jobs:
         id: init
         run: "packer init ./packer/packer.pkr.hcl"
 
-      - name: Output Vars
-        run: |
-          echo "USERNAME: ${{ secrets.USERNAME }}"
-          echo "PORT: ${{ vars.PORT }}"
-          echo "HOST: ${{ vars.HOST }}"
+      # - name: Output Vars
+      #   run: |
+      #     echo "USERNAME: ${{ secrets.USERNAME }}"
+      #     echo "PORT: ${{ vars.PORT }}"
+      #     echo "HOST: ${{ vars.HOST }}"
       
       - name: Run packer validate
         id: validate
