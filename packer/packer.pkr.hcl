@@ -99,7 +99,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "../webapp.service"
+    source      = "./webapp.service"
     destination = "/tmp/webapp.service"
   }
 
@@ -117,7 +117,7 @@ build {
   }
 
   provisioner "shell" {
-    script = "../build.sh"
+    script = "./build.sh"
   }
 
 }
