@@ -21,17 +21,25 @@ jobs:
       - run: npm --version 
       - run: npm install
       - run: npm test
+
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
         with:
           version: "1.8.3" # or `latest`
-      
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init ./image.pkr.hcl"
+
       - name: Output Vars
         run: |
           echo "USERNAME: ${{ secrets.USERNAME }}"
           echo "PORT: ${{ vars.PORT }}"
           echo "HOST: ${{ vars.HOST }}"
+      
+      - name: Current Location
+        run: pwd
 
       - name: Run packer validate
         id: validate
