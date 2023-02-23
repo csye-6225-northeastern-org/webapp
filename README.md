@@ -64,11 +64,23 @@ The Packer template contains several variables and locals that are used to custo
 
 - The resulting AMI can then be used to launch an EC2 instance with the web application already installed and configured.
 
+#### Steps to run packer
+1. Run the command ```packer validate .``` to validate the existing packer config
+2. Upon success, run ```packer build .``` to execute the packer script that creates AMI
+3. The AMI's created will be with the format webapp-{timestamp} to make sure the AMIs created are unique
 
 ### build.sh - Bash script to setup the EC2-instance when created from AMI
-
+- It sets up several variables for the paths of the web application archive, the extracted files, and the base directory of the code.
+- It waits for 30 seconds to allow the EC2 instance to initialize.
+- It updates and upgrades the packages on the EC2 instance and installs several packages, including Git, Node.js, and PostgreSQL 14.
+- It initializes and starts the PostgreSQL 14 service, creates a new database named "csye6225" and a new user named "ec2-user" with the password "pass", and grants the user all privileges on the database.
+- It installs the unzip package and moves the web application archive to the EC2 instance.
+- It checks if the web application archive exists, unzips it to the extracted path, and installs the dependencies of the web application.
+- It moves the web application service file to the systemd location, sets the file permissions, and enables and starts the web application service using systemd. It also displays the status of the web application service and its logs using journalctl.
 ### webapp.service 
-
+- This service file makes sure the webapp application runs as stand alone and run the the application 
+- In the service file, first the bash_profile will be loaded for the ENV variables and the application will be run so that then app can take the variables
+  
 ## Usage
 The application can be used by hitting the API using postman. Please give your credentials by selecting Basic auth under Authorization Tab in Postman
 
