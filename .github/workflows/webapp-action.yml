@@ -31,6 +31,9 @@ jobs:
       - name: Current Location
         run: pwd
 
+      - name: Current Location Files
+        run: ls
+
       - name: Run `packer init`
         id: init
         run: "packer init ./packer/packer.pkr.hcl"
