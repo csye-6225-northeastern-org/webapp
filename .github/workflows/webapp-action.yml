@@ -1,9 +1,9 @@
 name: webapp-github-action
 on:
   workflow_dispatch:
-    push:
+    pull_request:
       branches:
-        - a4_packer_changes
+      - main
 
 jobs:
   build:
