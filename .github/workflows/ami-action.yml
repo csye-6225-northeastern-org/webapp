@@ -1,13 +1,15 @@
 name: build-ami
 on:
-  workflow_dispatch:
-    push:
-      branches:
-        - a4_packer_changes
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
+
 
 jobs:
   build-ami:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup `packer`
@@ -22,10 +24,6 @@ jobs:
       - name: Run `packer init`
         id: init
         run: "packer init ./packer/packer.pkr.hcl"
-
-      - name: Run packer validate
-        id: validate
-        run: "packer validate ./packer/packer.pkr.hcl"
 
       - name: Build AMI with Packer
         run: |
@@ -42,4 +40,4 @@ jobs:
           -var "account_to_share=${{ vars.ACCOUNT_TO_SHARE }}" \
           -var "instance_type=${{ vars.INSTANCE_TYPE }}" \
           -var "profile=${{ vars.PROFILE }}" \
-          .
+          ./packer/packer.pkr.hcl
