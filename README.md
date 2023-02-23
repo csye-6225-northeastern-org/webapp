@@ -45,6 +45,30 @@ To install the project, follow these steps:
 4. Start the application with ```npm start```
 5. To test the application run the command ```npm test``` 
 
+## Build AMI using packer
+Packer template that uses the Amazon EBS builder to create an Amazon Machine Image (AMI) that can be used to launch an EC2 instance. The AMI will include a web application along with the necessary software and configuration to run it 
+
+The Packer template contains several variables and locals that are used to customize the build process:
+
+- The "variable" block defines input variables that control various aspects of the build process, such as the AWS region, instance type, and SSH user. It also includes variables for the web application's database connection details and runtime environment.
+
+- The "locals" block defines a local value that generates a timestamp to be used in the AMI name. This ensures that each build of the AMI has a unique name.
+
+- The "source" block defines the Amazon EBS builder named "webapp" that creates the AMI. The builder filters the source AMI to find the most recent Amazon Linux 2 AMI and creates a new AMI with the web application installed. The AMI is shared with the specified AWS account.
+
+- The "build" block defines the build process that uses the "webapp" source to create the AMI. The block includes several provisioners that run scripts and commands to configure the AMI:
+
+- The "file" provisioners copy files to the AMI, such as the web application service file and the web application code archive.
+
+- The "shell" provisioners run shell commands and scripts to configure the AMI, such as setting environment variables and running a build script to deploy the web application.
+
+- The resulting AMI can then be used to launch an EC2 instance with the web application already installed and configured.
+
+
+### build.sh - Bash script to setup the EC2-instance when created from AMI
+
+### webapp.service 
+
 ## Usage
 The application can be used by hitting the API using postman. Please give your credentials by selecting Basic auth under Authorization Tab in Postman
 
