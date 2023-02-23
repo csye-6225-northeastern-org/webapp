@@ -27,6 +27,12 @@ jobs:
         with:
           version: "1.8.3" # or `latest`
       
+      - name: Output Vars
+        run: |
+          echo "USERNAME: ${{ secrets.USERNAME }}"
+          echo "PORT: ${{ vars.PORT }}"
+          echo "HOST: ${{ vars.HOST }}"
+
       - name: Run packer validate
         id: validate
         run: "packer validate ./packer/packer.pkr.hcl"
