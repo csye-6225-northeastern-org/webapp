@@ -103,6 +103,11 @@ build {
     destination = "/tmp/webapp.service"
   }
 
+  provisioner "file" {
+    source      = "./webapp.zip"
+    destination = "/tmp/webapp.zip"
+  }
+
   provisioner "shell" {
     inline = [
       "echo 'export HOST=\"${var.HOST}\"' >> ~/.bash_profile",

@@ -28,6 +28,9 @@ jobs:
         with:
           version: "1.8.3" # or `latest`
 
+      - name : Zip the repo code
+        run: zip -r webapp.zip .
+
       - name: Current Location
         run: pwd
 
