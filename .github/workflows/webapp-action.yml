@@ -28,9 +28,12 @@ jobs:
         with:
           version: "1.8.3" # or `latest`
 
+      - name: Current Location
+        run: pwd
+
       - name: Run `packer init`
         id: init
-        run: "packer init ./image.pkr.hcl"
+        run: "packer init ./packer/packer.pkr.hcl"
 
       - name: Output Vars
         run: |
@@ -38,9 +41,6 @@ jobs:
           echo "PORT: ${{ vars.PORT }}"
           echo "HOST: ${{ vars.HOST }}"
       
-      - name: Current Location
-        run: pwd
-
       - name: Run packer validate
         id: validate
         run: "packer validate ./packer/packer.pkr.hcl"
