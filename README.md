@@ -45,6 +45,42 @@ To install the project, follow these steps:
 4. Start the application with ```npm start```
 5. To test the application run the command ```npm test``` 
 
+## Build AMI using packer
+Packer template that uses the Amazon EBS builder to create an Amazon Machine Image (AMI) that can be used to launch an EC2 instance. The AMI will include a web application along with the necessary software and configuration to run it 
+
+The Packer template contains several variables and locals that are used to customize the build process:
+
+- The "variable" block defines input variables that control various aspects of the build process, such as the AWS region, instance type, and SSH user. It also includes variables for the web application's database connection details and runtime environment.
+
+- The "locals" block defines a local value that generates a timestamp to be used in the AMI name. This ensures that each build of the AMI has a unique name.
+
+- The "source" block defines the Amazon EBS builder named "webapp" that creates the AMI. The builder filters the source AMI to find the most recent Amazon Linux 2 AMI and creates a new AMI with the web application installed. The AMI is shared with the specified AWS account.
+
+- The "build" block defines the build process that uses the "webapp" source to create the AMI. The block includes several provisioners that run scripts and commands to configure the AMI:
+
+- The "file" provisioners copy files to the AMI, such as the web application service file and the web application code archive.
+
+- The "shell" provisioners run shell commands and scripts to configure the AMI, such as setting environment variables and running a build script to deploy the web application.
+
+- The resulting AMI can then be used to launch an EC2 instance with the web application already installed and configured.
+
+#### Steps to run packer
+1. Run the command ```packer validate .``` to validate the existing packer config
+2. Upon success, run ```packer build .``` to execute the packer script that creates AMI
+3. The AMI's created will be with the format webapp-{timestamp} to make sure the AMIs created are unique
+
+### build.sh - Bash script to setup the EC2-instance when created from AMI
+- It sets up several variables for the paths of the web application archive, the extracted files, and the base directory of the code.
+- It waits for 30 seconds to allow the EC2 instance to initialize.
+- It updates and upgrades the packages on the EC2 instance and installs several packages, including Git, Node.js, and PostgreSQL 14.
+- It initializes and starts the PostgreSQL 14 service, creates a new database named "csye6225" and a new user named "ec2-user" with the password "pass", and grants the user all privileges on the database.
+- It installs the unzip package and moves the web application archive to the EC2 instance.
+- It checks if the web application archive exists, unzips it to the extracted path, and installs the dependencies of the web application.
+- It moves the web application service file to the systemd location, sets the file permissions, and enables and starts the web application service using systemd. It also displays the status of the web application service and its logs using journalctl.
+### webapp.service 
+- This service file makes sure the webapp application runs as stand alone and run the the application 
+- In the service file, first the bash_profile will be loaded for the ENV variables and the application will be run so that then app can take the variables
+  
 ## Usage
 The application can be used by hitting the API using postman. Please give your credentials by selecting Basic auth under Authorization Tab in Postman
 

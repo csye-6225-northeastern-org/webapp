@@ -1,0 +1,20 @@
+[Unit]
+Description=services file
+After=multi-user.target
+
+[Service]
+
+WorkingDirectory=/home/ec2-user
+EnvironmentFile=/etc/environment
+ExecStart=/bin/bash -c 'source /home/ec2-user/.bash_profile && /usr/bin/node /home/ec2-user/webapp/server.js'
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=node-app
+User=ec2-user
+
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=cloud-init.target

@@ -18,4 +18,24 @@ jobs:
       - run: npm --version 
       - run: npm install
       - run: npm test
+
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: "1.8.3" # or `latest`
+
+      - name : Zip the repo code
+        run: zip -r webapp.zip .
+        
+      - name: Init Packer
+        run: |
+          packer init ./packer/packer.pkr.hcl
+
+      - name: Validate Packer
+        run: |
+          if ! packer validate ./packer/packer.pkr.hcl; then
+              echo "Invalid AMI template. Please correct the errors and try again."
+              exit 1
+          fi
       
