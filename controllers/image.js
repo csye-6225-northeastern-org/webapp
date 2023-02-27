@@ -6,7 +6,7 @@ let productService = new ProductService();
 
 exports.uploadProductImage = ((req, res) => {
     console.log("Inside upload Product Image API ");
-    console.log("Request - Data : ", req);
+    console.log("Request - Data : ", req.params);
     res.send(201).send({});
 });
 
