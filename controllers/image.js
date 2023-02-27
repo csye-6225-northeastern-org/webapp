@@ -1,4 +1,5 @@
 const ProductService = require('../services/productService');
+const ImageService = require('../services/imageService');
 const Image = require('../models/Image');
 
 let productService = new ProductService(); 
@@ -6,7 +7,10 @@ let productService = new ProductService();
 
 exports.uploadProductImage = ((req, res) => {
     console.log("Inside upload Product Image API ");
-    console.log("Request - Data : ", req.params);
+    const file_name = req.params.file;
+    const product_id = req.params.product_id;
+    ImageService.uploadProductImage();
+
     res.send(201).send({});
 });
 
