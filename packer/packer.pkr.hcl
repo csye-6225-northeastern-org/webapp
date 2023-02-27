@@ -10,7 +10,7 @@ packer {
 variable "profile" {
   type    = string
   default = "dev"
-}
+
 
 variable "region" {
   type    = string
