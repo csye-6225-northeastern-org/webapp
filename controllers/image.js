@@ -2,26 +2,37 @@ const ProductService = require('../services/productService');
 const ImageService = require('../services/imageService');
 const Image = require('../models/Image');
 
-let productService = new ProductService(); 
+let productService = new ProductService();
+let imageService = new ImageService();
 
 
 exports.uploadProductImage = ((req, res) => {
     console.log("Inside upload Product Image API ");
-    const file_name = req.params.file;
+    const {file, file_type} = req.body;
     const product_id = req.params.product_id;
-    ImageService.uploadProductImage();
+    // imageService.uploadImage(req, res, next)
+    // .then((result) => {
+    //     console.log(result); // do something with the result
+    //     res.status(201).send({});
+    // })
+    // .catch((err) => {
+    //   console.error(err); // handle the error
+    // });
+    console.log("File sent in body : ", file);
+    console.log("File-type sent in body : ", file_type);
+    console.log("product_Id sent in body : ", product_id);
+    res.status(201).send({});
 
-    res.send(201).send({});
 });
 
 exports.getAllProductImages = ((req, res) => {
-    res.send(200).send({});
+    res.status(200).send({});
 });
 
 exports.getProductImage = ((req, res) => {
-    res.send(200).send({});
+    res.status(200).send({});
 });
 
 exports.deleteProductImage = ((req, res) => {
-    res.send(204).send({});
+    res.status(204).send({});
 });
