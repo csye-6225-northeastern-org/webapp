@@ -4,7 +4,6 @@ const multer = require("multer");
 const fs = require("fs");
 const uuid = require("uuid");
 const Image = require("../models/Image");
-const upload = multer({ dest: "uploads/" });
 
 class ImageService {
   constructor() {
@@ -24,6 +23,10 @@ class ImageService {
       Key: file.filename,
     };
     return this.s3.upload(uploadParams).promise();
+  }
+
+  async insertImageInfoToDB(imageInfo) {
+    return await Image.create(imageInfo);
   }
 }
 

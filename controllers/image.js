@@ -1,6 +1,6 @@
 const ProductService = require("../services/productService");
 const ImageService = require("../services/imageService");
-const Image = require("../models/Image");
+// const Image = require("../models/Image");
 
 let productService = new ProductService();
 let imageService = new ImageService();
@@ -8,20 +8,31 @@ let imageService = new ImageService();
 exports.uploadProductImage = (req, res, next) => {
   console.log("Inside upload Product Image API ");
   const product_id = req.params.product_id;
-  console.log("Inside Upload Product Image API with product-id : ", product_id);
-  const description = req.file.description;
-  console.log("Description : ", description);
+
   const file = req.file;
-  console.log("File : ", file);
+
   imageService
     .uploadFile(file)
     .then((result) => {
-      console.log(result);
+      const dataToInsert = {
+        product_id,
+        file_name: result.Key,
+        date_created: new Date(),
+        s3_bucket_path: result.Location,
+      };
+
+      imageService
+        .insertImageInfoToDB(dataToInsert)
+        .then((insertedRow) => {
+          res.status(201).send(insertedRow);
+        })
+        .catch((err) => {
+          res.status(400).send({ message: err.message });
+        });
     })
     .catch((err) => {
-      console.log(err);
+      res.status(400).send({ message: err.message });
     });
-  res.status(201).send({});
 };
 
 exports.getAllProductImages = (req, res) => {
