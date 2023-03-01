@@ -1,6 +1,6 @@
 #!/bin/bash
 FILE=/home/ec2-user/webapp.zip
-EXTRACTED_PATH=/home/ec2-user
+EXTRACTED_PATH=/home/ec2-user/webapp/
 CODE_BASE=/home/ec2-user/webapp/
 
 sleep 30
