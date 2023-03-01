@@ -40,13 +40,13 @@ router.delete(
 
 router.get(
   "/:product_id/image",
-  [validationMiddleware.validateParams, authMiddleware],
+  [authMiddleware],
   productImageController.getAllProductImages
 );
 
 router.get(
   "/:product_id/image/:image_id",
-  [validationMiddleware.validateParams, authMiddleware],
+  [authMiddleware],
   productImageController.getProductImage
 );
 

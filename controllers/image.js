@@ -34,11 +34,28 @@ exports.uploadProductImage = (req, res, next) => {
 };
 
 exports.getAllProductImages = (req, res) => {
-  res.status(200).send({});
+  const product_id = req.params.product_id;
+  imageService
+    .getImagesForProduct(product_id)
+    .then((imageInfo) => {
+      res.status(200).send(imageInfo);
+    })
+    .catch((err) => {
+      res.status(400).send({ message: err.message });
+    });
 };
 
 exports.getProductImage = (req, res) => {
-  res.status(200).send({});
+  const product_id = req.params.product_id;
+  const image_id = req.params.image_id;
+  imageService
+    .getSingleImageInfo(image_id, product_id)
+    .then((imageInfo) => {
+      res.status(200).send(imageInfo);
+    })
+    .catch((err) => {
+      res.status(400).send({ message: err.message });
+    });
 };
 
 exports.deleteProductImage = (req, res) => {
