@@ -28,6 +28,28 @@ class ImageService {
   async insertImageInfoToDB(imageInfo) {
     return await Image.create(imageInfo);
   }
+
+  async deleteFile(image_id, product_id) {
+    let file_name = "";
+    try {
+      file_name = Image.findOne({ where: { image_id, product_id } });
+    } catch (err) {
+      return err;
+    }
+
+    const params = {
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: file_name,
+    };
+
+    return this.s3.deleteObject(params).promise();
+  }
+
+  async deleteProductInfo(image_id, product_id) {
+    return await Image.destroy({
+      where: { image_id, product_id },
+    });
+  }
 }
 
 module.exports = ImageService;

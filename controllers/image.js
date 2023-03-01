@@ -8,9 +8,7 @@ let imageService = new ImageService();
 exports.uploadProductImage = (req, res, next) => {
   console.log("Inside upload Product Image API ");
   const product_id = req.params.product_id;
-
   const file = req.file;
-
   imageService
     .uploadFile(file)
     .then((result) => {
@@ -44,5 +42,19 @@ exports.getProductImage = (req, res) => {
 };
 
 exports.deleteProductImage = (req, res) => {
-  res.status(204).send({});
+  const product_id = req.params.product_id;
+  const image_id = req.params.image_id;
+  imageService
+    .deleteFile(image_id, product_id)
+    .then((deleteObject) => {
+      console.log("Deleted Object : ", deleteObject);
+      imageService
+        .deleteProductInfo(image_id, product_id)
+        .then((deletedRow) => {})
+        .catch((err) => {});
+      res.status(204).send({});
+    })
+    .catch((err) => {
+      res.status(400).send({ message: err.message });
+    });
 };
