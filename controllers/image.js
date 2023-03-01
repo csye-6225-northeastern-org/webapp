@@ -50,9 +50,13 @@ exports.deleteProductImage = (req, res) => {
       console.log("Deleted Object : ", deleteObject);
       imageService
         .deleteProductInfo(image_id, product_id)
-        .then((deletedRow) => {})
-        .catch((err) => {});
-      res.status(204).send({});
+        .then((deletedRow) => {
+          if (deletedRow > 0) {
+            res.status(204).send({});
+          } else {
+            res.status(404).send({ message: "404 Not Found" });
+          }
+        });
     })
     .catch((err) => {
       res.status(400).send({ message: err.message });
