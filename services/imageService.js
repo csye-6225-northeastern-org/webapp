@@ -32,11 +32,14 @@ class ImageService {
   async deleteFile(image_id, product_id) {
     let file_name = "";
     try {
-      file_name = Image.findOne({ where: { image_id, product_id } });
+      const file_name_data = await Image.findOne({
+        where: { image_id, product_id },
+      });
+      file_name = file_name_data.getDataValue("file_name");
     } catch (err) {
       return err;
     }
-
+    console.log("FIle name to delete : ", file_name);
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
       Key: file_name,
