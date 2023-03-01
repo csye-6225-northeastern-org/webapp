@@ -11,10 +11,16 @@ exports.uploadProductImage = (req, res, next) => {
   console.log("Inside Upload Product Image API with product-id : ", product_id);
   const description = req.file.description;
   console.log("Description : ", description);
-  // imageService.uploadImage(req, res, next);
-  // res.status(201).send({});
   const file = req.file;
   console.log("File : ", file);
+  imageService
+    .uploadFile(file)
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   res.status(201).send({});
 };
 
