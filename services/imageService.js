@@ -48,10 +48,12 @@ class ImageService {
     return this.s3.deleteObject(params).promise();
   }
 
-  async deleteProductInfo(image_id, product_id) {
-    return await Image.destroy({
-      where: { image_id, product_id },
-    });
+  async getSingleImageInfo(image_id, product_id) {
+    return await Image.findAll({ where: { image_id, product_id } });
+  }
+
+  async getImagesForProduct(product_id) {
+    return await Image.findAll({ where: { product_id } });
   }
 }
 
