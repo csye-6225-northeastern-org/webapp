@@ -183,11 +183,14 @@ exports.putUserInfo = ((req, res) =>{
     };
 
     if(!password){
-
+        console.log("PUT payload for UserFields : ", userFields);
         User.update(userFields,{
             where : {id}
         })
-        .then( result => {res.status(204).send({}); })
+        .then( result => {
+            console.log("@@@@@@ Result after updating row : ", result);
+            res.status(204).send({}); 
+        })
         .catch((error) => {
             console.log("&&&&&& error : ", error);
             res.status(403).send({"message" : "403 Forbidden - Controller"}) 
