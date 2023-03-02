@@ -10,7 +10,7 @@ const productImageController = require("../controllers/image");
 
 router.get(
   "/:id",
-  [validationMiddleware.validateParams],
+  [validationMiddleware.validateProductParams],
   productController.getProductInfo
 );
 

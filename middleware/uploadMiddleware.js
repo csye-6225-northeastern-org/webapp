@@ -12,7 +12,10 @@ const storage = multer.diskStorage({
     );
     const mimetype = fileTypes.test(file.mimetype);
     if (mimetype && extname) {
-      cb(null, Date.now() + path.extname(file.originalname));
+      const uniqueId = Date.now();
+      const appendedName = uniqueId + "_" + file.originalname;
+      console.log("%%%%%%%%%% Appended Name : ", appendedName); 
+      cb(null, uniqueId + "_" + file.originalname);
     } else {
       cb(new Error("400 - Cannot upload this file"), false);
     }
