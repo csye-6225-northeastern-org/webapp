@@ -10,7 +10,11 @@ const sequelize = new Sequelize(dbName, userName, password,
         {
             host: hostUrl,
             dialect: "postgres",
-            pool : dbPoolConfig
+            pool : dbPoolConfig,
+            // dialectOptions : {
+            //     ssl : "Amazon RDS"
+            // },
+            // language : 'en'
         });
 
 

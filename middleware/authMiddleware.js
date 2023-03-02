@@ -50,9 +50,12 @@ async function authMiddleware(req, res, next) {
                             }
                         } 
                         else{
+                            console.log("######## Inside ELSE AUTH MIDDLE WARE ##########");
+                            console.log("Result DataValues id :  ", result.dataValues.id);
+                            console.log("Request Params Id :  ", req.params.id);
                             if(parseInt(result.dataValues.id) !== parseInt(req.params.id)){
+                                console.log("********** Inside Incorrect Ids ELSE BLOCK **********")
                                 res.status(403).send({"message" : "403 Forbidden - Not Allowed"});
-                                return;
                             }else{
                                 req.userInfo = result
                                 next();
@@ -70,7 +73,7 @@ async function authMiddleware(req, res, next) {
         }
     })  
     .catch(error => {
-        console.log("***** Error : ", error);
+        console.log("***** Error : ", error.message);
     })
    
   } catch (err) {

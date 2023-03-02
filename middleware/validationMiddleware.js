@@ -11,11 +11,11 @@ exports.validateParams = (req, res, next) => {
     !validationUtil.validateId(id)
   );
   if (!validationUtil.validateId(id)) {
-    return res.status(400).send({ message: "400 Bad Request" });
+    res.status(400).send({ message: "400 Bad Request" });
   } else {
     userService.findOneById(id).then((userRow) => {
       if (!userRow) {
-        return res.status(400).send({ message: "400 Bad Request" });
+        res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
       } else {
         next();
       }
@@ -62,41 +62,71 @@ exports.validateBodyPostUser = (req, res, next) => {
 };
 
 exports.validateBodyPutUser = (req, res, next) => {
-  this.validateParams(req, res, next);
-  console.log(
-    "********####### Inside ValidateBody PUT after validate Params ********####### "
-  );
-  const { password, username, account_created, account_updated } = req.body;
-
-  if (username || account_created || account_updated) {
-    res.status(400).send({
-      message:
-        "400 Bad Request. Cannot update username / account_created / account_updated ",
+  // this.validateParams(req, res, next);
+  let userService = new UserService();
+  const id = req.params.id;
+  if (!validationUtil.validateId(id)) {
+    res.status(400).send({ message: "400 Bad Request" });
+  }
+  else {
+    userService.findOneById(id).then((userRow) => {
+      if (!userRow) {
+        res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
+      } else {
+        console.log(
+          "********####### Inside ValidateBody PUT after validate Params ********####### "
+        );
+        const { password, username, account_created, account_updated } = req.body;
+      
+        if (username || account_created || account_updated) {
+          res.status(400).send({
+            message:
+              "400 Bad Request. Cannot update username / account_created / account_updated ",
+          });
+          return;
+      
+        } else if (validationUtil.checkEmptyInput(password)) {
+          res.status(400).send({ message: "400 Bad Request. Empty password sent" });
+          return;
+      
+        } else {
+          next();
+        }
+      }
     });
-  } else if (validationUtil.checkEmptyInput(password)) {
-    res.status(400).send({ message: "400 Bad Request. Empty password sent" });
-  } else {
-    next();
   }
 };
 
 exports.validateDeleteProduct = (req, res, next) => {
-  let productService = new ProductService();
-  this.validateParams(req, res, next);
-  console.log(" ********###### Inside validate Delete ********##### ");
+  let userService = new UserService();
   const id = req.params.id;
-  productService.findOne(id).then((productRow) => {
-    if (!productRow) {
-      res.status(404).send({ message: "404 Not Found" });
-    } else if (productRow.dataValues.owner_user_id !== userIdAccessing) {
-      res
-        .status(403)
-        .send({ message: "403 Forbidden - Not allowed to delete" });
-    } else {
-      // req.prodDetails = productRow
-      next();
-    }
-  });
+  let productService = new ProductService();
+  // this.validateParams(req, res, next);
+  if (!validationUtil.validateId(id)) {
+    res.status(400).send({ message: "400 Bad Request" });
+  }else {
+    userService.findOneById(id).then((userRow) => {
+      if (!userRow) {
+        res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
+      } else {
+        console.log(" ********###### Inside validate Delete ********##### ");
+  
+        productService.findOne(id).then((productRow) => {
+          if (!productRow) {
+            res.status(404).send({ message: "404 Not Found" });
+          } else if (productRow.dataValues.owner_user_id !== userIdAccessing) {
+            res
+              .status(403)
+              .send({ message: "403 Forbidden - Not allowed to delete" });
+          } else {
+            // req.prodDetails = productRow
+            next();
+          }
+        });
+        
+      }
+    });
+  }
 };
 
 exports.validatePostProductInfo = (req, res, next) => {
