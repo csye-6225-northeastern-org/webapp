@@ -23,6 +23,13 @@ This is a Node.js project designed to solve the user management system. This pro
 
 **DELETE /v1/product/:id:** To delete the product from Database, the user should initially provide credentials. If authenticated, then if the resource is not present then 404 will be returned. If the resource exists, then 204 will be returned else appropriate status codes will be returned 
 
+**GET /v1/product/:product_id/image:** retrieves all the images info with specified product id and S3 path with bucket name, if it exists. This API requires the request to have a Authorization header with the username and password encoded in base64. The API compares the provided credentials with the user data in the database and returns a 400, 200 status code and the user data, depending on the result of the authentication and the existence of the user.
+
+**POST /v1/product/:product_id/image:** This end point takes the image as input to upload for the given product-id. As this is an authenticated end point, user's credentials will be validated and upon authentication, the file will be uploaded to S3 automatically to the bucket created by Terraform so that the S3 credentials are not  hardcoded
+
+**DELETE /v1/product/:id:** To delete the image related to product-id, the user should initially provide a valid image-id with the product-id in the params. User must provide auth credentials. If authenticated, then if the resource is not present then 404 will be returned. If the resource exists, then 204 will be returned else appropriate status codes will be returned respectively
+
+**GET /v1/product/:product_id/image/:image_id:** retrieves a single specific image info with specified product id and S3 path with bucket name, if it exists. This API requires the request to have a Authorization header with the username and password encoded in base64. The API compares the provided credentials with the user data in the database and returns a 400, 200 status code and the user data, depending on the result of the authentication and the existence of the user.
 
 ## Dependencies
 
