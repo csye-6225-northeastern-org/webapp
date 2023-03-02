@@ -127,12 +127,8 @@ exports.validateDeleteProduct = (req, res, next) => {
         productService.findOne(id).then((productRow) => {
           if (!productRow) {
             res.status(404).send({ message: "404 Not Found" });
-          } else if (productRow.dataValues.owner_user_id !== userRow.dataValues.id) {
-            res
-              .status(403)
-              .send({ message: "403 Forbidden - Not allowed to delete" });
           } else {
-            // req.prodDetails = productRow
+            req.prodInfo = productRow
             next();
           }
         });
@@ -305,12 +301,15 @@ exports.validateDeleteImageUpload = (req, res, next) => {
           .then((imageRow) => {
             if (!imageRow) {
               res.status(404).send({ message: "404 Image Not Found" });
-            } else {
+            }
+             else {
+              req.imageInfo = imageRow;
+              req.prodInfo = productRow;
               next();
             }
           })
           .catch((err) => {
-            res.status(400).send({ message: "400 Bad Request" });
+            res.status(400).send({ message: "400 Bad Request" , err : err.message});
           });
       }
     });
