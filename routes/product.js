@@ -62,7 +62,7 @@ router.post(
 
 router.delete(
   "/:product_id/image/:image_id",
-  [authMiddleware, validationMiddleware.validateDeleteImageUpload],
+  [validationMiddleware.validateDeleteImageUpload, authMiddleware ],
   productImageController.deleteProductImage
 );
 
