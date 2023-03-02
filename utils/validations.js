@@ -24,7 +24,10 @@ function checkEmptyInput(inputPass){
 }
 
 function validateQuantity(quantity){
-  
+  if (typeof quantity === 'string' || quantity instanceof String){
+    return false;
+  }
+
   const numericalQty = Number(quantity);
   const validQuantity = numericalQty >= 0 && numericalQty <= 100;
   return validQuantity;
