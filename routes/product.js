@@ -40,25 +40,29 @@ router.delete(
 
 router.get(
   "/:product_id/image",
-  [authMiddleware],
+  [authMiddleware, validationMiddleware.validateProductImageUpload],
   productImageController.getAllProductImages
 );
 
 router.get(
   "/:product_id/image/:image_id",
-  [authMiddleware],
+  [authMiddleware, validationMiddleware.validateDeleteImageUpload],
   productImageController.getProductImage
 );
 
 router.post(
   "/:product_id/image",
-  [authMiddleware, uploadMiddleware],
+  [
+    validationMiddleware.validateProductImageUpload,
+    authMiddleware,
+    uploadMiddleware,
+  ],
   productImageController.uploadProductImage
 );
 
 router.delete(
   "/:product_id/image/:image_id",
-  [authMiddleware],
+  [authMiddleware, validationMiddleware.validateDeleteImageUpload],
   productImageController.deleteProductImage
 );
 

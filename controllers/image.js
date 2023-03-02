@@ -1,8 +1,5 @@
-const ProductService = require("../services/productService");
 const ImageService = require("../services/imageService");
-// const Image = require("../models/Image");
 
-let productService = new ProductService();
 let imageService = new ImageService();
 
 exports.uploadProductImage = (req, res, next) => {
