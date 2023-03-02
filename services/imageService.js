@@ -63,6 +63,11 @@ class ImageService {
   async checkIfImageExists(image_id, product_id) {
     return await Image.findOne({ where: { image_id, product_id } });
   }
+
+  async checkIfImage(image_id) {
+    return await Image.findOne({ where: { image_id } });
+  }
+
 }
 
 module.exports = ImageService;

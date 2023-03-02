@@ -39,6 +39,16 @@ async function authMiddleware(req, res, next) {
                                 next();
                             }
 
+                        }else if(req.imageInfo && req.prodInfo){
+                            console.log("******** INSIDE AUTH MIDDLE-WARE IMAGE INFO ********");
+                            const imageInfo = req.imageInfo;
+                            const prodInfo = req.prodInfo;
+                            if(prodInfo.dataValues.owner_user_id !==  result.dataValues.id){
+                                res.status(403).send({"message" : "403 Forbidden - Product Update Forbidden"});
+                            }else{
+                                req.userInfo = result
+                                next();
+                            }
                         }else if(req.prodInfo){
                             console.log("******** INSIDE AUTH MIDDLE-WARE PROD-LEVEL ********");
                             const prodInfo = req.prodInfo;
