@@ -23,6 +23,26 @@ exports.validateParams = (req, res, next) => {
   }
 };
 
+exports.validateProductParams = (req, res, next) => {
+  let productService = new ProductService();
+  const id = req.params.id;
+  console.log(
+    "********** Validation of id in param : ",
+    !validationUtil.validateId(id)
+  );
+  if (!validationUtil.validateId(id)) {
+    res.status(400).send({ message: "400 Bad Request" });
+  } else {
+    productService.findOne(id).then((prodRow) => {
+      if (!prodRow) {
+        res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
+      } else {
+        next();
+      }
+    });
+  }
+};
+
 exports.validateBodyPostUser = (req, res, next) => {
   let userService = new UserService();
   const {
@@ -97,22 +117,17 @@ exports.validateBodyPutUser = (req, res, next) => {
 };
 
 exports.validateDeleteProduct = (req, res, next) => {
-  let userService = new UserService();
   const id = req.params.id;
   let productService = new ProductService();
   if (!validationUtil.validateId(id)) {
     res.status(400).send({ message: "400 Bad Request" });
   }else {
-    userService.findOneById(id).then((userRow) => {
-      if (!userRow) {
-        res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
-      } else {
         console.log(" ********###### Inside validate Delete ********##### ");
   
         productService.findOne(id).then((productRow) => {
           if (!productRow) {
             res.status(404).send({ message: "404 Not Found" });
-          } else if (productRow.dataValues.owner_user_id !== userIdAccessing) {
+          } else if (productRow.dataValues.owner_user_id !== userRow.dataValues.id) {
             res
               .status(403)
               .send({ message: "403 Forbidden - Not allowed to delete" });
@@ -122,8 +137,6 @@ exports.validateDeleteProduct = (req, res, next) => {
           }
         });
         
-      }
-    });
   }
 };
 
@@ -176,7 +189,6 @@ exports.validatePatchProduct = (req, res, next) => {
     date_last_updated,
     owner_user_id,
   } = req.body;
-  // const inputCheckBool = checkIdInput(req, res);
   const invalidRequestBody = JSON.stringify(req.body) === "{}";
   let productService = new ProductService();
   if (!validationUtil.validateId(id)) {
