@@ -23,9 +23,22 @@ async function authMiddleware(req, res, next) {
                 authUtils.comparePassword(user.pass, result.dataValues.password)
                 .then( passwordCompare =>{
                     if(passwordCompare){
+                        console.log("************ AFTER PASSWORD COMPARE product Info : ", req.prodInfo)
+                        console.log("************ Request Params id : ", req.params.id);
                         if(!req.params.id){
+                            console.log("##### Inside If block of params-id : ")
                             req.userInfo = result
-                            next();
+                            if(req.prodInfo){
+                                const prodInfo = req.prodInfo;
+                                if(prodInfo.dataValues.owner_user_id !==  result.dataValues.id){
+                                    res.status(403).send({"message" : "403 Forbidden - Product Update Forbidden"});
+                                }else{
+                                    next();
+                                }
+                            }else{
+                                next();
+                            }
+
                         }else if(req.prodInfo){
                             console.log("******** INSIDE AUTH MIDDLE-WARE PROD-LEVEL ********");
                             const prodInfo = req.prodInfo;
