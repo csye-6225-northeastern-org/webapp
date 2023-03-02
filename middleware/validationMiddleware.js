@@ -62,7 +62,6 @@ exports.validateBodyPostUser = (req, res, next) => {
 };
 
 exports.validateBodyPutUser = (req, res, next) => {
-  // this.validateParams(req, res, next);
   let userService = new UserService();
   const id = req.params.id;
   if (!validationUtil.validateId(id)) {
@@ -101,7 +100,6 @@ exports.validateDeleteProduct = (req, res, next) => {
   let userService = new UserService();
   const id = req.params.id;
   let productService = new ProductService();
-  // this.validateParams(req, res, next);
   if (!validationUtil.validateId(id)) {
     res.status(400).send({ message: "400 Bad Request" });
   }else {
