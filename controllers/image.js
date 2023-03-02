@@ -63,7 +63,7 @@ exports.deleteProductImage = (req, res) => {
     .then((deleteObject) => {
       console.log("Deleted Object : ", deleteObject);
       imageService
-        .deleteProductInfo(image_id, product_id)
+        .deleteImageProductInfo(image_id, product_id)
         .then((deletedRow) => {
           if (deletedRow > 0) {
             res.status(204).send({});

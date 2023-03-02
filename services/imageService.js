@@ -56,6 +56,10 @@ class ImageService {
     return await Image.findAll({ where: { product_id } });
   }
 
+  async deleteImageProductInfo(image_id, product_id){
+    return await Image.destroy({ where: { image_id, product_id } });
+  }
+
   async checkIfImageExists(image_id, product_id) {
     return await Image.findOne({ where: { image_id, product_id } });
   }
