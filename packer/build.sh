@@ -53,6 +53,7 @@ fi
 # installing dependencies
 cd $CODE_BASE
 npm i
+mkdir uploads
 
 # ls /tmp/
 # moving service file from temp location to systemd location
