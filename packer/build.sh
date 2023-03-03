@@ -57,11 +57,11 @@ npm i
 # ls /tmp/
 # moving service file from temp location to systemd location
 # sudo cp /tmp/webapp.service /etc/systemd/system/
-sudo chmod 664 /etc/systemd/system/webapp.service
-sudo systemctl daemon-reload
-sudo systemctl start webapp.service
-sudo systemctl enable webapp.service
+# sudo chmod 664 /etc/systemd/system/webapp.service
+# sudo systemctl daemon-reload
+# sudo systemctl start webapp.service
+# sudo systemctl enable webapp.service
 # # Status of Webapp
-sudo systemctl status webapp.service
-journalctl -u webapp.service
+# sudo systemctl status webapp.service
+# journalctl -u webapp.service
 
