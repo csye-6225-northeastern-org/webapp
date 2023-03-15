@@ -91,4 +91,7 @@ The Packer template contains several variables and locals that are used to custo
 ## Usage
 The application can be used by hitting the API using postman. Please give your credentials by selecting Basic auth under Authorization Tab in Postman
 
- 
+
+
+
+
