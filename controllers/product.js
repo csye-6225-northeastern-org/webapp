@@ -133,13 +133,17 @@ exports.deleteProductInfo = ((req, res) => {
     const imageService = new ImageService();
     imageService.deleteAllFiles(id)
     .then(results => {
-      // Handle results array here
-      results.forEach(result => {
-        if (result.status === 'failure') {
-            res.status(500).send({"message" : "Image deletion failure from S3"});
-        } 
-      });
-    
+      // Handle results array here if exists
+      if(Array.isArray()){
+        results.forEach(result => {
+            if (result.status === 'failure') {
+                res.status(500).send({"message" : "Image deletion failure from S3"});
+            } 
+          });
+      }else if(results === 'fail'){
+        res.status(404).send({"message" : "404 Not Found"});
+      }
+
         productService.deleteProductInfo(id)
         .then( deletedRow => {
             if(deletedRow > 0){
@@ -150,5 +154,6 @@ exports.deleteProductInfo = ((req, res) => {
                 res.status(404).send({"message" : "404 Not Found"});
             }
         })
+      
     })
 });

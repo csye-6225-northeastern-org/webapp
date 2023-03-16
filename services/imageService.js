@@ -1,8 +1,6 @@
 require("dotenv").config;
 const AWS = require("aws-sdk");
-const multer = require("multer");
 const fs = require("fs");
-const uuid = require("uuid");
 const Image = require("../models/Image");
 
 class ImageService {
