@@ -48,6 +48,75 @@ class ImageService {
     return this.s3.deleteObject(params).promise();
   }
 
+  async deleteObjectItem(item) {
+    try {
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: item.getDataValue("file_name"),
+      };
+      await this.s3.deleteObject(params).promise();
+      return { status: 'success', item };
+    } catch (err) {
+      return { status: 'failure', item, error: err.message };
+    }
+  }
+  
+  async deleteAllItems(file_name_data) {
+    try {
+      const results = await Promise.all(file_name_data.map(item => this.deleteObjectItem(item)));
+      return results;
+    } catch (err) {
+      // Handle unexpected errors here
+      console.error('Unexpected error:', err);
+      throw err;
+    }
+  }
+
+  // async deleteAllFiles(product_id){
+  //   let file_name_data = []
+  //   try{
+  //     file_name_data = await Image.findAll({
+  //       where: { product_id },
+  //     });
+  //   }catch(err){
+  //     return err;
+  //   }
+
+  //   if(file_name_data.length !==0){
+  //     console.log(" ****** Length of Array > 0 ****** ");
+  //   }
+  //   try{
+  //     file_name_data.map(async item => {
+  //       const params = {
+  //         Bucket: process.env.S3_BUCKET_NAME,
+  //         Key: item.getDataValue("file_name"),
+  //       };
+  //       await this.s3.deleteObject(params).promise();
+  //     })
+  //   }catch(err){
+  //     return err;
+  //   }
+    
+  // }
+
+  async deleteAllFiles(product_id){
+    let file_name_data = []
+    try{
+      file_name_data = await Image.findAll({
+        where: { product_id },
+      });
+    }catch(err){
+      return err;
+    }
+
+    if(file_name_data.length ===0){
+      return "success";
+    }
+
+    return await this.deleteAllItems(file_name_data);
+  }
+
+
   async getSingleImageInfo(image_id, product_id) {
     return await Image.findAll({ where: { image_id, product_id } });
   }
