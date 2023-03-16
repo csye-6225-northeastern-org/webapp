@@ -72,33 +72,6 @@ class ImageService {
     }
   }
 
-  // async deleteAllFiles(product_id){
-  //   let file_name_data = []
-  //   try{
-  //     file_name_data = await Image.findAll({
-  //       where: { product_id },
-  //     });
-  //   }catch(err){
-  //     return err;
-  //   }
-
-  //   if(file_name_data.length !==0){
-  //     console.log(" ****** Length of Array > 0 ****** ");
-  //   }
-  //   try{
-  //     file_name_data.map(async item => {
-  //       const params = {
-  //         Bucket: process.env.S3_BUCKET_NAME,
-  //         Key: item.getDataValue("file_name"),
-  //       };
-  //       await this.s3.deleteObject(params).promise();
-  //     })
-  //   }catch(err){
-  //     return err;
-  //   }
-    
-  // }
-
   async deleteAllFiles(product_id){
     let file_name_data = []
     try{
