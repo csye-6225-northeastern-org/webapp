@@ -21,7 +21,7 @@ This is a Node.js project designed to solve the user management system. This pro
 
 **PUT /v1/product/:id:** To partially update the product with the specified id, the data in the request body this API must be leveraged. The API returns a 400 status code if the request tries to modify fields that should not be modified (e.g., owner_user_id, data_added and date_last_updated).
 
-**DELETE /v1/product/:id:** To delete the product from Database, the user should initially provide credentials. If authenticated, then if the resource is not present then 404 will be returned. If the resource exists, then 204 will be returned else appropriate status codes will be returned 
+**DELETE /v1/product/:id:** To delete the product from Database, the user should initially provide credentials. If authenticated, then if the resource is not present then 404 will be returned. If the resource exists, then 204 will be returned else appropriate status codes will be returned. Note: This is a cascade delete. If the product-id is deleted, then all the images associated with product-id will be deleted from S3
 
 **GET /v1/product/:product_id/image:** retrieves all the images info with specified product id and S3 path with bucket name, if it exists. This API requires the request to have a Authorization header with the username and password encoded in base64. The API compares the provided credentials with the user data in the database and returns a 400, 200 status code and the user data, depending on the result of the authentication and the existence of the user.
 
