@@ -1,5 +1,6 @@
 const validations = require('../utils/validations');
 const ProductService = require('../services/productService');
+const ImageService = require("../services/imageService");
 const utils = require('../utils/utils');
 
 let productService = new ProductService(); 
@@ -128,12 +129,26 @@ exports.patchProductInfo = ((req, res) => {
 
 exports.deleteProductInfo = ((req, res) => {
     const { id } = req.params;
-    productService.deleteProductInfo(id)
-    .then( deletedRow => {
-        if(deletedRow > 0){
-            res.status(204).send({}); 
-        }else{
-            res.status(404).send({"message" : "404 Not Found"});
-        }
-    })    
+    // Need to check if any images exists for the product and delete the rows too!
+    const imageService = new ImageService();
+    imageService.deleteAllFiles(id)
+    .then(results => {
+      // Handle results array here
+      results.forEach(result => {
+        if (result.status === 'failure') {
+            res.status(500).send({"message" : "Image deletion failure from S3"});
+        } 
+      });
+    
+        productService.deleteProductInfo(id)
+        .then( deletedRow => {
+            if(deletedRow > 0){
+                // const imageService = new ImageService();
+                // deleteAllFiles()
+                res.status(204).send({}); 
+            }else{
+                res.status(404).send({"message" : "404 Not Found"});
+            }
+        })
+    })
 });

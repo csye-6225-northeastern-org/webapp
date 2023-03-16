@@ -125,3 +125,9 @@ crash.log
 
 # Packer For built boxes
 *.box
+
+# DS_store file to ignore
+.DS_Store
+
+# Ignore uplods folder
+uploads/
