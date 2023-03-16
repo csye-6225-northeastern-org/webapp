@@ -141,7 +141,7 @@ exports.deleteProductInfo = ((req, res) => {
             } 
           });
       }else if(results === 'fail'){
-        res.status(404).send({"message" : "404 Not Found"});
+        res.status(500).send({"message" : "500 Internal Server Error - Failed to delete Product Images"});
       }
 
         productService.deleteProductInfo(id)
