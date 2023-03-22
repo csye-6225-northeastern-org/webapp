@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const logger = require("../utils/logger");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -14,7 +15,7 @@ const storage = multer.diskStorage({
     if (mimetype && extname) {
       const uniqueId = Date.now();
       const appendedName = uniqueId + "_" + file.originalname;
-      console.log("%%%%%%%%%% Appended Name : ", appendedName); 
+      logger.info("%%%%%%%%%% Appended Name : ", appendedName); 
       cb(null, uniqueId + "_" + file.originalname);
     } else {
       cb(new Error("400 - Cannot upload this file"), false);
