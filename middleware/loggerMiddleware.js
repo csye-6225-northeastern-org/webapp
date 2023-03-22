@@ -1,13 +1,8 @@
-function loggerMiddleware(req, res, next) {
-    console.log("Calling API : ", `${req.method} ${req.url}`);
-    const start = Date.now();
-  
-    res.on('finish', () => {
-      const elapsed = Date.now() - start;
-      console.log(`${req.method} ${req.url} ${res.statusCode} ${elapsed}ms`);
-    });
-  
-    next();
-}
+const loggerMiddleware = (req, res, next) => {
+  const { method, url } = req;
+  const timestamp = new Date().toISOString();
+  logger.info(`${method} ${url} ${timestamp}`);
+  next();
+};
   
 module.exports = loggerMiddleware;
