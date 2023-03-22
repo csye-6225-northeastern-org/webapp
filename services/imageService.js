@@ -2,6 +2,7 @@ require("dotenv").config;
 const AWS = require("aws-sdk");
 const fs = require("fs");
 const Image = require("../models/Image");
+const logger = require("../utils/logger");
 
 class ImageService {
   constructor() {
@@ -37,7 +38,7 @@ class ImageService {
     } catch (err) {
       return err;
     }
-    console.log("FIle name to delete : ", file_name);
+    logger.info(`****** File name to delete :  ${file_name} *******`);
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
       Key: file_name,

@@ -1,6 +1,7 @@
 const validations = require('../utils/validations');
 const utils = require('../utils/utils');
 const authUtils = require("../utils/authUtils");
+const logger = require('../utils/logger');
 
 const User = require('../models/users');
 
@@ -42,6 +43,7 @@ async function getSingleUserRecordByUsername(username){
 }
 
 exports.getUserInfo = ((req, res) => {
+    logger.info("Processing GET Request for USER APIs");
     const inputCheckBool = checkIdInput(req, res);
     if(inputCheckBool){
         res.status(400).send({"message" : "Invalid Id in the request"});
@@ -61,6 +63,7 @@ exports.getUserInfo = ((req, res) => {
 
 exports.putUserInfo = ((req, res) =>{
     const {id} = req.params;
+    logger.info(`Processing USER-PUT Request for Id : ${id}`);
     const {first_name, last_name, password} = req.body;
 
     const userFields = { 
@@ -70,16 +73,16 @@ exports.putUserInfo = ((req, res) =>{
     };
 
     if(!password){
-        console.log("PUT payload for UserFields : ", userFields);
+        logger.info("PUT payload for UserFields : ", userFields);
         User.update(userFields,{
             where : {id}
         })
         .then( result => {
-            console.log("@@@@@@ Result after updating row : ", result);
+            logger.info("@@@@@@ Result after updating row : ", result);
             res.status(204).send({}); 
         })
         .catch((error) => {
-            console.log("&&&&&& error : ", error);
+            logger.info("&&&&&& error : ", error);
             res.status(403).send({"message" : "403 Forbidden - Controller"}) 
         });
     }else{
@@ -99,6 +102,7 @@ exports.putUserInfo = ((req, res) =>{
 
 exports.postUserInfo = ((req, res) =>{
     const {first_name, last_name, password, username} = req.body;
+    logger.info(`Processing USER-POST Request for username : ${username}`);
     authUtils.generateHash(password)
     .then(hash => {
         User.create({

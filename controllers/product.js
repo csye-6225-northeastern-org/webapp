@@ -2,6 +2,7 @@ const validations = require('../utils/validations');
 const ProductService = require('../services/productService');
 const ImageService = require("../services/imageService");
 const utils = require('../utils/utils');
+const logger = require('../utils/logger');
 
 let productService = new ProductService(); 
 
@@ -30,6 +31,7 @@ function checkIdInput(req, res){
 
 exports.getProductInfo = ((req, res) => {
     const { id } = req.params;
+    logger.info(`Processing GET Request for Id : ${id}`);
     productService.findOne(id)
     .then(row =>{
         if(!row){
@@ -43,6 +45,7 @@ exports.getProductInfo = ((req, res) => {
 
 exports.postProductInfo = ((req, res) => {
     const {name, description, sku, manufacturer, quantity} = req.body;
+    logger.info(`Processing POST Request with sku : ${sku}`);
     const result = req.userInfo; 
     productService.findOrCreate(sku, {
             name,
@@ -89,8 +92,7 @@ exports.putProductInfo = ((req, res) => {
 
 exports.patchProductInfo = ((req, res) => {
     const id = req.params.id;
-    console.log("Request Body : ", req.body);
-    console.log("Id  : ", id);
+    logger.info(`Processing PATCH Request for Id : ${id}`);
     const {name, description, sku, manufacturer, quantity} = req.body;
     const productFields = { 
         ...(name && { name }), 
@@ -129,6 +131,7 @@ exports.patchProductInfo = ((req, res) => {
 
 exports.deleteProductInfo = ((req, res) => {
     const { id } = req.params;
+    logger.info(`Processing DELETE Request for Id : ${id}`);
     // Need to check if any images exists for the product and delete the rows too!
     const imageService = new ImageService();
     imageService.deleteAllFiles(id)
