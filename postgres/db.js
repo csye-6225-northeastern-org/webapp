@@ -7,14 +7,15 @@ const {
   nodeEnv,
   dbPoolConfig,
 } = require("./config");
+const logger = require("../utils/logger");
 
 const sequelize = new Sequelize(dbName, userName, password, {
   host: hostUrl,
   dialect: "postgres",
   pool: dbPoolConfig,
-  // dialectOptions: {
-  //     ssl: "Amazon RDS",
-  //   },
+  logging : (msg) => {
+    logger.info(msg);
+  }
 });
 
 if (nodeEnv === "development") {
