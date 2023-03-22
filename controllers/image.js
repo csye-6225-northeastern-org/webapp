@@ -1,9 +1,10 @@
 const ImageService = require("../services/imageService");
+const logger = require("../utils/logger");
 
 let imageService = new ImageService();
 
 exports.uploadProductImage = (req, res, next) => {
-  console.log("Inside upload Product Image API ");
+  logger.info("Inside upload Product Image API ");
   const product_id = req.params.product_id;
   const file = req.file;
   imageService
@@ -32,6 +33,7 @@ exports.uploadProductImage = (req, res, next) => {
 
 exports.getAllProductImages = (req, res) => {
   const product_id = req.params.product_id;
+  logger.info(`Getting all the images for Product with Id : ${product_id}`);
   imageService
     .getImagesForProduct(product_id)
     .then((imageInfo) => {
@@ -45,6 +47,7 @@ exports.getAllProductImages = (req, res) => {
 exports.getProductImage = (req, res) => {
   const product_id = req.params.product_id;
   const image_id = req.params.image_id;
+  logger.info(`Getting the image info of image-id : ${image_id} for Product with Id : ${product_id}`);
   imageService
     .getSingleImageInfo(image_id, product_id)
     .then((imageInfo) => {
@@ -58,10 +61,11 @@ exports.getProductImage = (req, res) => {
 exports.deleteProductImage = (req, res) => {
   const product_id = req.params.product_id;
   const image_id = req.params.image_id;
+  logger.info(`Getting the image info of image-id : ${image_id} for Product with Id : ${product_id}`);
   imageService
     .deleteFile(image_id, product_id)
     .then((deleteObject) => {
-      console.log("Deleted Object : ", deleteObject);
+      logger.info("Deleted Object : ", deleteObject);
       imageService
         .deleteImageProductInfo(image_id, product_id)
         .then((deletedRow) => {

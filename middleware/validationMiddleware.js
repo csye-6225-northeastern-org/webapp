@@ -2,11 +2,12 @@ const UserService = require("../services/userService");
 const ProductService = require("../services/productService");
 const ImageService = require("../services/imageService");
 const validationUtil = require("../utils/validations");
+const logger = require("../utils/logger");
 
 exports.validateParams = (req, res, next) => {
   let userService = new UserService();
   const id = req.params.id;
-  console.log(
+  logger.info(
     "********** Validation of id in param : ",
     !validationUtil.validateId(id)
   );
@@ -26,7 +27,7 @@ exports.validateParams = (req, res, next) => {
 exports.validateProductParams = (req, res, next) => {
   let productService = new ProductService();
   const id = req.params.id;
-  console.log(
+  logger.info(
     "********** Validation of id in param : ",
     !validationUtil.validateId(id)
   );
@@ -92,7 +93,7 @@ exports.validateBodyPutUser = (req, res, next) => {
       if (!userRow) {
         res.status(400).send({ message: "400 Bad Request - Invalid Id In Params" });
       } else {
-        console.log(
+        logger.info(
           "********####### Inside ValidateBody PUT after validate Params ********####### "
         );
         const { password, username, account_created, account_updated } = req.body;
@@ -122,7 +123,7 @@ exports.validateDeleteProduct = (req, res, next) => {
   if (!validationUtil.validateId(id)) {
     res.status(400).send({ message: "400 Bad Request" });
   }else {
-        console.log(" ********###### Inside validate Delete ********##### ");
+        logger.info(" ********###### Inside validate Delete ********##### ");
   
         productService.findOne(id).then((productRow) => {
           if (!productRow) {
@@ -261,7 +262,7 @@ exports.validatePutProduct = (req, res, next) => {
 };
 
 exports.validateProductImageUpload = (req, res, next) => {
-  console.log("Inside validating product-id entered in the URI");
+  logger.info("Inside validating product-id entered in the URI");
   //   const invalidRequestBody = JSON.stringify(req.body) === "{}";
   const { product_id } = req.params;
   let productService = new ProductService();
@@ -269,7 +270,7 @@ exports.validateProductImageUpload = (req, res, next) => {
     return res.status(400).send({ message: "400 Bad Request" });
   } else {
     productService.findOne(product_id).then((productRow) => {
-      console.log(
+      logger.info(
         "Product Row inside validate Product Image Upload : ",
         productRow
       );
@@ -284,7 +285,7 @@ exports.validateProductImageUpload = (req, res, next) => {
 };
 
 exports.validateDeleteImageUpload = (req, res, next) => {
-  console.log("Inside Delete validation method for Image Upload");
+  logger.info("Inside Delete validation method for Image Upload");
   const { product_id } = req.params;
   const { image_id } = req.params;
   let productService = new ProductService();
