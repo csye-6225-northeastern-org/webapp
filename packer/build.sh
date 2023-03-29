@@ -38,6 +38,8 @@ node -e "console.log('Running Node.js ' + process.version)"
 # sudo -u postgres psql -c "CREATE USER \"ec2-user\" WITH PASSWORD 'pass';"
 # sudo -u postgres psql -c 'GRANT ALL PRIVILEGES ON DATABASE csye6225 TO "ec2-user";'
 
+# Install cloud watch agent
+sudo yum install amazon-cloudwatch-agent -y
 
 sudo yum install unzip -y
 
@@ -47,6 +49,9 @@ if [ -f "$FILE" ]; then
     echo "$FILE exists. Unzipping the file"
     unzip $FILE -d $EXTRACTED_PATH
 fi
+
+# Configure CloudWatch agent
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c $CODE_BASE/statsd/config.json
 
 # git clone https://icecube-pixel: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@github.com/csye-6225-northeastern-org/webapp.git
 
