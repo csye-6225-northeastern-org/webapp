@@ -99,7 +99,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "../statsd/config.json"
+    source      = "./config.json"
     destination = "/tmp/config.json"
   }
 
