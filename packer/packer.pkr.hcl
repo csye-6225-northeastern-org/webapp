@@ -99,7 +99,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "./config.json"
+    source      = "./packer/config.json"
     destination = "/tmp/config.json"
   }
 
