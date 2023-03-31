@@ -50,9 +50,6 @@ if [ -f "$FILE" ]; then
     unzip $FILE -d $EXTRACTED_PATH
 fi
 
-# Configure CloudWatch agent
-sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c $CODE_BASE/statsd/config.json
-
 # git clone https://icecube-pixel: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@github.com/csye-6225-northeastern-org/webapp.git
 
 # installing dependencies
