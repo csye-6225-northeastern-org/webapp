@@ -98,28 +98,15 @@ build {
     "source.amazon-ebs.webapp"
   ]
 
-  // provisioner "file" {
-  //   source      = "./packer/webapp.service"
-  //   destination = "/tmp/webapp.service"
-  // }
+  provisioner "file" {
+    source      = "../statsd/config.json"
+    destination = "/tmp/config.json"
+  }
 
   provisioner "file" {
     source      = "./webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-
-  // provisioner "shell" {
-  //   inline = [
-  //     "echo 'export HOST=\"${var.HOST}\"' >> ~/.bash_profile",
-  //     "echo 'export USERNAME=\"${var.USERNAME}\"' >> ~/.bash_profile",
-  //     "echo 'export PASSWORD=\"${var.PASSWORD}\"' >> ~/.bash_profile",
-  //     "echo 'export DB_NAME=\"${var.DB_NAME}\"' >> ~/.bash_profile",
-  //     "echo 'export DIALECT=\"${var.DIALECT}\"' >> ~/.bash_profile",
-  //     "echo 'export PORT=${var.PORT}' >> ~/.bash_profile",
-  //     "echo 'export NODE_ENV=\"${var.NODE_ENV}\"' >> ~/.bash_profile",
-  //     "source ~/.bash_profile"
-  //   ]
-  // }
 
   provisioner "shell" {
     script = "./packer/build.sh"
