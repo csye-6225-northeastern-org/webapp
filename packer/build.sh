@@ -40,6 +40,8 @@ node -e "console.log('Running Node.js ' + process.version)"
 
 # Install cloud watch agent
 sudo yum install amazon-cloudwatch-agent -y
+# Restart the cloudwatch agent upon instance restart
+sudo systemctl enable amazon-cloudwatch-agent.service 
 
 sudo yum install unzip -y
 
