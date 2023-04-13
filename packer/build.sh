@@ -40,8 +40,10 @@ node -e "console.log('Running Node.js ' + process.version)"
 
 # Install cloud watch agent
 sudo yum install amazon-cloudwatch-agent -y
+# Status of the cloudwatch agent service
+sudo systemctl status amazon-cloudwatch-agent
 # Restart the cloudwatch agent upon instance restart
-sudo systemctl enable amazon-cloudwatch-agent.service 
+sudo systemctl enable amazon-cloudwatch-agent 
 
 sudo yum install unzip -y
 
@@ -51,8 +53,6 @@ if [ -f "$FILE" ]; then
     echo "$FILE exists. Unzipping the file"
     unzip $FILE -d $EXTRACTED_PATH
 fi
-
-# git clone https://icecube-pixel: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@github.com/csye-6225-northeastern-org/webapp.git
 
 # installing dependencies
 cd $CODE_BASE
