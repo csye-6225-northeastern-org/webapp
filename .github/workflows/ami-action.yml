@@ -63,4 +63,17 @@ jobs:
             exit 1
           else
             echo "Auto Scaling Group '${{ vars.ASG_NAME }}' exists."
+            # Setting Dev credentials for AWS 
+            aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID_DEV }}"
+            aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}"
+            aws configure set region "${{ vars.REGION }}"
+            latest_ami=$(aws ec2 describe-images --owners self --filters "Name=state,Values=available" "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" \
+              --query "reverse(sort_by(Images, &CreationDate))[0].ImageId" )
+            echo "The latest AMI is: $latest_ami"
+            # Setting Demo Credentials for AWS
+            aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID_DEMO }}"
+            aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY_DEMO }}"
+            aws configure set region "${{ vars.REGION }}"
+            aws ec2 create-launch-template-version --launch-template-name asg-launch-template --source-version 1 --launch-template-data '{"ImageId":'$latest_ami'}'
+            aws autoscaling start-instance-refresh --auto-scaling-group-name '${{ vars.ASG_NAME }}'
           fi
