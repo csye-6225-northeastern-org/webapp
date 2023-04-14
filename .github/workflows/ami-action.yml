@@ -60,7 +60,7 @@ jobs:
           ASG_EXISTS=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "${{ vars.ASG_NAME }}" --query 'length(AutoScalingGroups)')
           if [ "$ASG_EXISTS" -eq 0 ]; then
             echo "Auto Scaling Group '${{ vars.ASG_NAME }}' does not exist."
-            exit 1
+            exit
           else
             echo "Auto Scaling Group '${{ vars.ASG_NAME }}' exists."
             # Setting Dev credentials for AWS 
