@@ -48,19 +48,19 @@ jobs:
           -var "profile=${{ vars.PROFILE }}" \
           ./packer/packer.pkr.hcl
 
-      - name: Update Launch Template
+      - name: Configure AWS Credentials Action For GitHub Actions
         uses: aws-actions/configure-aws-credentials@v1
         with:
+          # Demo credentials are used here by default
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEMO }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEMO }}
           aws-region: ${{ vars.REGION }}
-        env:
-          AWS_ACCESS_KEY_ID_DEV: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-          AWS_SECRET_ACCESS_KEY_DEV: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-          AWS_ACCESS_KEY_ID_DEMO: ${{ secrets.AWS_ACCESS_KEY_ID_DEMO }}
-          AWS_SECRET_ACCESS_KEY_DEMO: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEMO }}
-          run: |
-            export AWS_ACCESS_KEY_ID_DEV=$AWS_ACCESS_KEY_ID_DEV
-            export AWS_SECRET_ACCESS_KEY_DEV=$AWS_SECRET_ACCESS_KEY_DEV
-            export AWS_ACCESS_KEY_ID_DEMO=$AWS_ACCESS_KEY_ID_DEMO
-            export AWS_SECRET_ACCESS_KEY_DEMO=$AWS_SECRET_ACCESS_KEY_DEMO
-            chmod +x attach_latest_ami.sh 
-            ./attach_latest_ami.sh
+      - name: Checking if ASG is up and running in demo environment
+        run: |
+          ASG_EXISTS=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "${{ vars.ASG_NAME }}" --query 'length(AutoScalingGroups)')
+          if [ "$ASG_EXISTS" -eq 0 ]; then
+            echo "Auto Scaling Group '${{ vars.ASG_NAME }}' does not exist."
+            exit 1
+          else
+            echo "Auto Scaling Group '${{ vars.ASG_NAME }}' exists."
+          fi
