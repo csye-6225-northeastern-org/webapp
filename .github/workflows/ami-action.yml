@@ -68,7 +68,7 @@ jobs:
             aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}"
             aws configure set region "${{ vars.REGION }}"
             aws sts get-caller-identity
-            latest_ami=$(aws ec2 describe-images --owners self --filters "Name=state,Values=available" "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" \
+            latest_ami=$(aws ec2 describe-images --owners ${{ var.DEV_ACCOUNT_ID }} --filters "Name=state,Values=available" "Name=architecture,Values=x86_64" "Name=root-device-type,Values=ebs" \
               --query "reverse(sort_by(Images, &CreationDate))[0].ImageId" --region ${{ vars.REGION }})
             echo "The latest AMI is: $latest_ami"
             # Setting Demo Credentials for AWS
