@@ -75,6 +75,6 @@ jobs:
             aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID_DEMO }}"
             aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY_DEMO }}"
             aws configure set region "${{ vars.REGION }}"
-            aws ec2 create-launch-template-version --launch-template-name asg-launch-template --source-version 1 --launch-template-data '{"ImageId":'$latest_ami'}'
+            aws ec2 create-launch-template-version --launch-template-name webapp-launch-template --source-version 1 --launch-template-data '{"ImageId":'$latest_ami'}'
             aws autoscaling start-instance-refresh --auto-scaling-group-name '${{ vars.ASG_NAME }}'
           fi
