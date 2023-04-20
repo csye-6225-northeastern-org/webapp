@@ -4,7 +4,7 @@ const router = express.Router()
 
 const index_controller = require("../controllers/index");
 
-router.get("/welcome", [statsMiddleware], index_controller.welcome);
+router.get("/nithin", [statsMiddleware], index_controller.welcome);
 
 router.get("/healthz", [statsMiddleware], index_controller.healthz);
 
